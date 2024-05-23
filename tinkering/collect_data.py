@@ -3,7 +3,6 @@ from tqdm import tqdm
 import numpy as np
 
 # get gene names from uniprot
-
 data = {}
 with open("data/uniprot_gene3d_human.tsv") as f:
     for line in tqdm(f):
@@ -20,7 +19,6 @@ with open("data/uniprot_gene3d_human.tsv") as f:
         data[uniprot_gene_name] = {"cath_superfamily": cath_superfamily, "pdb_id": pdb_id}
 
 # extract chromosomes from gene_info
-gene_info_homo_sapiens_gene_ids = set()
 with open("data/gene_info") as f:
     for line in tqdm(f):
         if not line.startswith("9606"):
@@ -28,9 +26,11 @@ with open("data/gene_info") as f:
 
         gene_name = line.split("\t")[2]
         chromosome = line.split("\t")[6]
+        gene_id = line.split("\t")[1]
 
         if gene_name in data.keys():
             data[gene_name]["chromosome"] = chromosome
+            data[gene_name]["gene_id"] = gene_id
 
 # extract genomic locations from gene2accession
 

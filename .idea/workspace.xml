@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tinkering/check_completeness_gff_GRCh38.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/uniprot_genebank_homo_sapiens.tsv" beforeDir="false" afterPath="$PROJECT_DIR$/output/uniprot_genebank_homo_sapiens.tsv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +72,7 @@
       <workItem from="1716296195541" duration="4039000" />
       <workItem from="1716446386773" duration="4519000" />
       <workItem from="1716469123709" duration="21000" />
-      <workItem from="1716469168280" duration="1794000" />
+      <workItem from="1716469168280" duration="3984000" />
     </task>
     <servers />
   </component>
