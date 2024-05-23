@@ -1,0 +1,5 @@
+# ignore large data files
+data/cath-domain-description-file.txt
+data/cath-domain-list.txt
+data/gene2accession
+data/gene_info
