@@ -12,17 +12,15 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             continue
 
         if line.split("\t")[2] == "CDS":
-            split = line.split("\t")[8]
+            attributes = line.split("\t")[8]
 
-            for item in split:
+            for item in line.split(";"):
                 if item.split("=")[0] == "Dbxref":
                     references = item.split("=")[1]
-                    split2 = references.split(",")
 
-                    for item2 in split2:
+                    for item2 in references.split(","):
                         if item2.split(":")[0] == "GeneID":
                             gene_id = item2.split(":")[1]
-                            print(gene_id)
                             break
 
         refseq_gene_ids.add(gene_id)
