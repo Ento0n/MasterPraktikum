@@ -4,3 +4,7 @@ data/cath-domain-list.txt
 data/gene2accession
 data/gene_info
 data/GCF_000001405.40_GRCh38.p14_genomic.gff
+data/GCA_000001405.29_GRCh38.p14_genomic.fna
+
+# gotta ignore the output since it's larger than 100mb
+output/uniprot_genebank_homo_sapiens.tsv
