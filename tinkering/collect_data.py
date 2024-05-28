@@ -149,6 +149,8 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             old_start = start
             j += 1
 
+
+
 # convert to pandas dataframe
 df = pd.DataFrame.from_dict(data, orient="index")
 df.replace(to_replace="", value="NA")
