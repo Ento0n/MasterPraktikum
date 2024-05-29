@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tinkering/check_extracting_chromosomes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
     </list>
@@ -102,7 +101,8 @@
       <workItem from="1716833092519" duration="1841000" />
       <workItem from="1716881122165" duration="2128000" />
       <workItem from="1716888357038" duration="1127000" />
-      <workItem from="1716901584431" duration="3648000" />
+      <workItem from="1716901584431" duration="4453000" />
+      <workItem from="1717008016226" duration="704000" />
     </task>
     <servers />
   </component>

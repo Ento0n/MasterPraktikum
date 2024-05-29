@@ -88,66 +88,75 @@ def extract_gene_id_gff(line: str) -> str:
             break
     return gene_id
 
+
+chromosome_to_head_mapping = {1: "CM000663.2", 2: "CM000664.2", 3: "CM000665.2", 4: "CM000666.2", 5: "CM000667.2",
+                              6: "CM000668.2", 7: "CM000668.2", 8: "CM000670.2", 9: "CM000671.2", 10: "CM000672.2",
+                              11: "CM000673.2", 12: "CM000674.2", 13: "CM000675.2", 14: "CM000676.2",
+                              15: "CM000677.2", 16: "CM000678.2", 17: "CM000679.2", 18: "CM000680.2",
+                              19: "CM000680.2", 20: "CM000682.2", 21: "CM000683.2", 22: "CM000684.2",
+                              "X": "CM000685.2", "Y": "CM000686.2", "MT": "GL000209.2"}
+
 with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
-    CDSs = {}
-    as_events = {}
-    old_gene_id = ""
-    old_gene_name = ""
-    old_start = ""
-    i = 0
-    j = 0
-    for line in tqdm(f):
-        if line.startswith("#"):
-            continue
-
-        if line.split("\t")[2] == "pseudogene":
-            gene_id = extract_gene_id_gff(line)
-
-            if gene_id not in gene_id_gene_name_mapping.keys():
+    with open("data/GCA_000001405.29_GRCh38.p14_genomic.fna") as g:
+        CDSs = {}
+        as_events = {}
+        old_gene_id = ""
+        old_gene_name = ""
+        old_start = ""
+        i = 0
+        j = 0
+        for line in tqdm(f):
+            if line.startswith("#"):
                 continue
 
-            gene_name = gene_id_gene_name_mapping[gene_id]
+            if line.split("\t")[2] == "pseudogene":
+                gene_id = extract_gene_id_gff(line)
 
-            data[gene_name]["pseudogene"] = True
+                if gene_id not in gene_id_gene_name_mapping.keys():
+                    continue
 
-        if line.split("\t")[2] == "CDS":
-            gene_id = extract_gene_id_gff(line)
+                gene_name = gene_id_gene_name_mapping[gene_id]
 
-            if gene_id not in gene_id_gene_name_mapping.keys():
-                continue
+                data[gene_name]["pseudogene"] = True
 
-            gene_name = gene_id_gene_name_mapping[gene_id]
+            if line.split("\t")[2] == "CDS":
+                gene_id = extract_gene_id_gff(line)
 
-            data[gene_name]["pseudogene"] = False
+                if gene_id not in gene_id_gene_name_mapping.keys():
+                    continue
 
-            # clear the record of CDSs in case new gene is handled
-            if gene_id != old_gene_id:
-                data[old_gene_name]["CDSs"] = as_events.copy()
-                as_events.clear()
-                i = 0
+                gene_name = gene_id_gene_name_mapping[gene_id]
 
-            # extract start
-            start = line.split("\t")[3]
+                data[gene_name]["pseudogene"] = False
 
-            # new alternative splicing event, new protein
-            if gene_id == old_gene_id and start < old_start:
-                as_events[i] = CDSs.copy()
-                CDSs.clear()
-                j = 0
-                i += 1
+                # clear the record of CDSs in case new gene is handled
+                if gene_id != old_gene_id:
+                    data[old_gene_name]["CDSs"] = as_events.copy()
+                    as_events.clear()
+                    i = 0
 
-            # extract information
-            stop = line.split("\t")[4]
-            strand = line.split("\t")[6]
-            phase = line.split("\t")[7]
+                # extract start
+                start = line.split("\t")[3]
 
-            CDSs[j] = {"start": start, "stop": stop, "strand": strand, "phase": phase}
+                # new alternative splicing event, new protein
+                if gene_id == old_gene_id and start < old_start:
+                    as_events[i] = CDSs.copy()
+                    CDSs.clear()
+                    j = 0
+                    i += 1
 
-            # remember old gene id and increme nt CDS counter
-            old_gene_id = gene_id
-            old_gene_name = gene_name
-            old_start = start
-            j += 1
+                # extract information
+                stop = line.split("\t")[4]
+                strand = line.split("\t")[6]
+                phase = line.split("\t")[7]
+
+                CDSs[j] = {"start": start, "stop": stop, "strand": strand, "phase": phase}
+
+                # remember old gene id and increme nt CDS counter
+                old_gene_id = gene_id
+                old_gene_name = gene_name
+                old_start = start
+                j += 1
 
 
 
