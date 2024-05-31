@@ -100,6 +100,7 @@ sequences = list(SeqIO.parse("data/GCA_000001405.29_GRCh38.p14_genomic.fna", "fa
 
 with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
     CDSs = {}
+    extracted_sequences = {}
     as_events = {}
     old_gene_id = ""
     old_gene_name = ""
@@ -134,6 +135,8 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             if gene_id != old_gene_id:
                 # add last collected CDSs
                 as_events[i] = CDSs.copy()
+                as_events[str(i) + "a"] = extracted_sequences.copy()
+                extracted_sequences.clear()
                 CDSs.clear()
                 j = 0
 
@@ -149,12 +152,16 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             if strand == "+":
                 if gene_id == old_gene_id and start < old_start:
                     as_events[i] = CDSs.copy()
+                    as_events[str(i) + "a"] = extracted_sequences.copy()
+                    extracted_sequences.clear()
                     CDSs.clear()
                     j = 0
                     i += 1
             else:
                 if gene_id == old_gene_id and start > old_start:
                     as_events[i] = CDSs.copy()
+                    as_events[str(i) + "a"] = extracted_sequences.copy()
+                    extracted_sequences.clear()
                     CDSs.clear()
                     j = 0
                     i += 1
@@ -165,14 +172,15 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
             CDSs[j] = {"start": start, "stop": stop, "strand": strand, "phase": phase}
 
-            # extract sequence out of genome fasta file
+            # filter out chromosome names I cannot map
             if data[gene_name]["chromosome"] != "-":
                 if data[gene_name]["chromosome"] != "X|Y":
+                    # extract sequence out of genome fasta file
                     for record in sequences:
                         if record.id == chromosome_to_head_mapping[data[gene_name]["chromosome"]]:
                             region_seq = record.seq[start:stop]
+                            extracted_sequences[j] = str(region_seq)
                             break
-
 
             # remember old gene id and increment CDS counter
             old_gene_id = gene_id

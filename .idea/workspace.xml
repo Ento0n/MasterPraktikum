@@ -103,7 +103,7 @@
       <workItem from="1716888357038" duration="1127000" />
       <workItem from="1716901584431" duration="4453000" />
       <workItem from="1717008016226" duration="6850000" />
-      <workItem from="1717143018866" duration="1720000" />
+      <workItem from="1717143018866" duration="4398000" />
     </task>
     <servers />
   </component>
@@ -136,6 +136,6 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/MasterPraktikum$test_collect_data.coverage" NAME="test collect_data Coverage Results" MODIFIED="1717144565667" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/MasterPraktikum$test_collect_data.coverage" NAME="test collect_data Coverage Results" MODIFIED="1717146939014" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
   </component>
 </project>
