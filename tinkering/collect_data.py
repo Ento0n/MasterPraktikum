@@ -143,17 +143,24 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
             # extract start
             start = int(line.split("\t")[3])
+            strand = line.split("\t")[6]
 
             # in case of multiple alternative sequencing events, add last CDSs collection to as_events
-            if gene_id == old_gene_id and start < old_start:
-                as_events[i] = CDSs.copy()
-                CDSs.clear()
-                j = 0
-                i += 1
+            if strand == "+":
+                if gene_id == old_gene_id and start < old_start:
+                    as_events[i] = CDSs.copy()
+                    CDSs.clear()
+                    j = 0
+                    i += 1
+            else:
+                if gene_id == old_gene_id and start > old_start:
+                    as_events[i] = CDSs.copy()
+                    CDSs.clear()
+                    j = 0
+                    i += 1
 
             # extract information
             stop = int(line.split("\t")[4])
-            strand = line.split("\t")[6]
             phase = int(line.split("\t")[7])
 
             CDSs[j] = {"start": start, "stop": stop, "strand": strand, "phase": phase}
