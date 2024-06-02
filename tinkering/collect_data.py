@@ -96,6 +96,72 @@ chromosome_to_head_mapping = {"1": "CM000663.2", "2": "CM000664.2", "3": "CM0006
                               "19": "CM000680.2", "20": "CM000682.2", "21": "CM000683.2", "22": "CM000684.2",
                               "X": "CM000685.2", "Y": "CM000686.2", "MT": "GL000209.2"}
 sequences = list(SeqIO.parse("data/GCA_000001405.29_GRCh38.p14_genomic.fna", "fasta"))
+codon_table = {
+    'TCA': 'S',    # Serina
+    'TCC': 'S',    # Serina
+    'TCG': 'S',    # Serina
+    'TCT': 'S',    # Serina
+    'TTC': 'F',    # Fenilalanina
+    'TTT': 'F',    # Fenilalanina
+    'TTA': 'L',    # Leucina
+    'TTG': 'L',    # Leucina
+    'TAC': 'Y',    # Tirosina
+    'TAT': 'Y',    # Tirosina
+    'TAA': '*',    # Stop
+    'TAG': '*',    # Stop
+    'TGC': 'C',    # Cisteina
+    'TGT': 'C',    # Cisteina
+    'TGA': '*',    # Stop
+    'TGG': 'W',    # Triptofano
+    'CTA': 'L',    # Leucina
+    'CTC': 'L',    # Leucina
+    'CTG': 'L',    # Leucina
+    'CTT': 'L',    # Leucina
+    'CCA': 'P',    # Prolina
+    'CCC': 'P',    # Prolina
+    'CCG': 'P',    # Prolina
+    'CCT': 'P',    # Prolina
+    'CAC': 'H',    # Histidina
+    'CAT': 'H',    # Histidina
+    'CAA': 'Q',    # Glutamina
+    'CAG': 'Q',    # Glutamina
+    'CGA': 'R',    # Arginina
+    'CGC': 'R',    # Arginina
+    'CGG': 'R',    # Arginina
+    'CGT': 'R',    # Arginina
+    'ATA': 'I',    # Isoleucina
+    'ATC': 'I',    # Isoleucina
+    'ATT': 'I',    # Isoleucina
+    'ATG': 'M',    # Methionina
+    'ACA': 'T',    # Treonina
+    'ACC': 'T',    # Treonina
+    'ACG': 'T',    # Treonina
+    'ACT': 'T',    # Treonina
+    'AAC': 'N',    # Asparagina
+    'AAT': 'N',    # Asparagina
+    'AAA': 'K',    # Lisina
+    'AAG': 'K',    # Lisina
+    'AGC': 'S',    # Serina
+    'AGT': 'S',    # Serina
+    'AGA': 'R',    # Arginina
+    'AGG': 'R',    # Arginina
+    'GTA': 'V',    # Valina
+    'GTC': 'V',    # Valina
+    'GTG': 'V',    # Valina
+    'GTT': 'V',    # Valina
+    'GCA': 'A',    # Alanina
+    'GCC': 'A',    # Alanina
+    'GCG': 'A',    # Alanina
+    'GCT': 'A',    # Alanina
+    'GAC': 'D',    # Acido Aspartico
+    'GAT': 'D',    # Acido Aspartico
+    'GAA': 'E',    # Acido Glutamico
+    'GAG': 'E',    # Acido Glutamico
+    'GGA': 'G',    # Glicina
+    'GGC': 'G',    # Glicina
+    'GGG': 'G',    # Glicina
+    'GGT': 'G'     # Glicina
+}
 
 
 with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
@@ -178,7 +244,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     # extract sequence out of genome fasta file
                     for record in sequences:
                         if record.id == chromosome_to_head_mapping[data[gene_name]["chromosome"]]:
-                            region_seq = record.seq[start:stop]
+                            region_seq = record.seq[start-1:stop]
                             extracted_sequences[j] = str(region_seq)
                             break
 

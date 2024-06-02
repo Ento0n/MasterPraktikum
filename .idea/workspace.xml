@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_extracting_chromosomes.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/check_extracting_chromosomes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +104,7 @@
       <workItem from="1716888357038" duration="1127000" />
       <workItem from="1716901584431" duration="4453000" />
       <workItem from="1717008016226" duration="6850000" />
-      <workItem from="1717143018866" duration="4398000" />
+      <workItem from="1717143018866" duration="11989000" />
     </task>
     <servers />
   </component>
