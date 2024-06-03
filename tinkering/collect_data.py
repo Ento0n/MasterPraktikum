@@ -89,6 +89,25 @@ def extract_gene_id_gff(line: str) -> str:
     return gene_id
 
 
+def convert_nuc2aa(dna: str, frame: int):
+    # size of slices
+    n = 3
+
+    # make sure all nucleotides are upper case letters
+    dna = dna.upper()
+
+    slices = [dna[i:i + n] for i in range(frame, len(dna), n)]
+
+    prot_seq = ""
+    for piece in slices:
+        if piece in codon_table.keys():
+            prot_seq = prot_seq + codon_table[piece]
+        else:
+            prot_seq = prot_seq + "-"
+
+    return prot_seq
+
+
 chromosome_to_head_mapping = {"1": "CM000663.2", "2": "CM000664.2", "3": "CM000665.2", "4": "CM000666.2", "5": "CM000667.2",
                               "6": "CM000668.2", "7": "CM000668.2", "8": "CM000670.2", "9": "CM000671.2", "10": "CM000672.2",
                               "11": "CM000673.2", "12": "CM000674.2", "13": "CM000675.2", "14": "CM000676.2",
@@ -168,6 +187,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
     CDSs = {}
     extracted_sequences = {}
     as_events = {}
+    aa_sequences = {}
     old_gene_id = ""
     old_gene_name = ""
     old_start = ""
@@ -202,9 +222,18 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 # add last collected CDSs
                 as_events[i] = CDSs.copy()
                 as_events[str(i) + "a"] = extracted_sequences.copy()
+                as_events[str(i) + "b"] = aa_sequences.copy()
                 extracted_sequences.clear()
+                aa_sequences.clear()
                 CDSs.clear()
                 j = 0
+
+                # add counter for coding sequences
+                cds_counter = []
+                for i in range(int(len(as_events) / 3)): # divide by 3 because of 0a & 0b and so on
+                    cds_counter.append(len(as_events[i]))
+                data[old_gene_name]["cds_counter"] = cds_counter.copy()
+                cds_counter.clear()
 
                 data[old_gene_name]["CDSs"] = as_events.copy()
                 as_events.clear()
@@ -219,7 +248,9 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 if gene_id == old_gene_id and start < old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
+                    as_events[str(i) + "b"] = aa_sequences.copy()
                     extracted_sequences.clear()
+                    aa_sequences.clear()
                     CDSs.clear()
                     j = 0
                     i += 1
@@ -227,16 +258,18 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 if gene_id == old_gene_id and start > old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
+                    as_events[str(i) + "b"] = aa_sequences.copy()
                     extracted_sequences.clear()
+                    aa_sequences.clear()
                     CDSs.clear()
                     j = 0
                     i += 1
 
             # extract information
             stop = int(line.split("\t")[4])
-            phase = int(line.split("\t")[7])
+            frame = int(line.split("\t")[7])
 
-            CDSs[j] = {"start": start, "stop": stop, "strand": strand, "phase": phase}
+            CDSs[j] = {"start": start, "stop": stop, "strand": strand, "phase": frame}
 
             # filter out chromosome names I cannot map
             if data[gene_name]["chromosome"] != "-":
@@ -246,6 +279,9 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                         if record.id == chromosome_to_head_mapping[data[gene_name]["chromosome"]]:
                             region_seq = record.seq[start-1:stop]
                             extracted_sequences[j] = str(region_seq)
+
+                            # convert extracted sequence to protein sequence
+                            aa_sequences[j] = str(convert_nuc2aa(region_seq, frame))
                             break
 
             # remember old gene id and increment CDS counter
