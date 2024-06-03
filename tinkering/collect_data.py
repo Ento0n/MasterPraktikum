@@ -216,6 +216,8 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             gene_name = gene_id_gene_name_mapping[gene_id]
 
             data[gene_name]["pseudogene"] = False
+            strand = line.split("\t")[6]
+            data[gene_name]["strand"] = strand
 
             # clear the record of CDSs in case new gene is handled
             if gene_id != old_gene_id:
@@ -241,7 +243,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
             # extract start
             start = int(line.split("\t")[3])
-            strand = line.split("\t")[6]
 
             # in case of multiple alternative sequencing events, add last CDSs collection to as_events
             if strand == "+":
@@ -269,7 +270,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             stop = int(line.split("\t")[4])
             frame = int(line.split("\t")[7])
 
-            CDSs[j] = {"start": start, "stop": stop, "strand": strand, "phase": frame}
+            CDSs[j] = {"start": start, "stop": stop, "frame": frame}
 
             # filter out chromosome names I cannot map
             if data[gene_name]["chromosome"] != "-":
