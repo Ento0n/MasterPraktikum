@@ -237,6 +237,15 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 data[old_gene_name]["cds_counter"] = cds_counter.copy()
                 cds_counter.clear()
 
+                # Add protein sequences as new column of df
+                pro_seqs = []
+                for i in range(int(len(as_events) / 3)):
+                    full_seq = ""
+                    for seq in as_events[str(i) + "b"].values():
+                        full_seq = full_seq + seq
+                    pro_seqs.append(full_seq)
+                data[old_gene_name]["protein_sequences"] = pro_seqs
+
                 data[old_gene_name]["CDSs"] = as_events.copy()
                 as_events.clear()
                 i = 0
