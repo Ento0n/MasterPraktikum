@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/tinkering/check_gff_chromosomes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/uniprot_gene3d_human.tsv" beforeDir="false" afterPath="$PROJECT_DIR$/data/uniprot_gene3d_human.tsv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_completeness_gff_GRCh38.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/check_completeness_gff_GRCh38.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -104,7 +107,8 @@
       <workItem from="1716901584431" duration="4453000" />
       <workItem from="1717008016226" duration="6850000" />
       <workItem from="1717143018866" duration="14345000" />
-      <workItem from="1717409314779" duration="8303000" />
+      <workItem from="1717409314779" duration="8412000" />
+      <workItem from="1717490311331" duration="11453000" />
     </task>
     <servers />
   </component>

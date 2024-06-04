@@ -15,6 +15,9 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
         types.add(line.split("\t")[2])
 
         if line.split("\t")[2] == "CDS" or line.split("\t")[2] == "pseudogene":
+            if line.split("\t")[0] != "NC_000001.11":
+                continue
+
             attributes = line.split("\t")[8]
 
             for item in attributes.split(";"):

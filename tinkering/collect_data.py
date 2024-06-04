@@ -12,11 +12,12 @@ with open("data/uniprot_gene3d_human.tsv") as f:
         uniprot_gene_name = line.split("\t")[4].split(" ")[0]
         cath_superfamily = line.split("\t")[7]
         pdb_id = line.split("\t")[8].strip()
+        uniprot_sequence = line.split("\t")[9].strip()
 
         if uniprot_gene_name.endswith(";"):
             uniprot_gene_name = uniprot_gene_name[:-1]
 
-        data[uniprot_gene_name] = {"cath_superfamily": cath_superfamily, "pdb_id": pdb_id}
+        data[uniprot_gene_name] = {"cath_superfamily": cath_superfamily, "pdb_id": pdb_id, "uniprot_sequence": uniprot_sequence}
 
 # extract chromosomes from gene_info
 gene_id_gene_name_mapping = {}
@@ -218,6 +219,8 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             data[gene_name]["pseudogene"] = False
             strand = line.split("\t")[6]
             data[gene_name]["strand"] = strand
+            sequence_region = line.split("\t")[0]
+            data[gene_name]["gff_sequence_region"] = sequence_region
 
             # clear the record of CDSs in case new gene is handled
             if gene_id != old_gene_id:
@@ -230,6 +233,12 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 CDSs.clear()
                 j = 0
 
+                # in case an entry is already present, skip this one...
+                if "CDSs" in data[old_gene_name].keys():
+                    as_events.clear()
+                    i = 0
+                    continue
+
                 # add counter for coding sequences
                 cds_counter = []
                 for i in range(int(len(as_events) / 3)): # divide by 3 because of 0a & 0b and so on
@@ -241,9 +250,9 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 pro_seqs = []
                 for i in range(int(len(as_events) / 3)):
                     full_seq = ""
-                    for seq in as_events[str(i) + "b"].values():
+                    for seq in as_events[str(i) + "a"].values():
                         full_seq = full_seq + seq
-                    pro_seqs.append(full_seq)
+                    pro_seqs.append(convert_nuc2aa(full_seq, 0))
                 data[old_gene_name]["protein_sequences"] = pro_seqs
 
                 data[old_gene_name]["CDSs"] = as_events.copy()
@@ -289,9 +298,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                         if record.id == chromosome_to_head_mapping[data[gene_name]["chromosome"]]:
                             region_seq = record.seq[start-1:stop]
                             extracted_sequences[j] = str(region_seq)
-
-                            # convert extracted sequence to protein sequence
-                            aa_sequences[j] = str(convert_nuc2aa(region_seq, frame))
                             break
 
             # remember old gene id and increment CDS counter
@@ -299,7 +305,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             old_gene_name = gene_name
             old_start = start
             j += 1
-
 
 
 # convert to pandas dataframe
