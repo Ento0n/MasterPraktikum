@@ -109,6 +109,22 @@ def convert_nuc2aa(dna: str, frame: int):
     return prot_seq
 
 
+def reverse_complement(dna: str):
+    reverse_mapping = {"A": "T", "T": "A", "G": "C", "C": "G", "a": "t", "t": "a", "g": "c", "c": "g"}
+    reverse_dna = ""
+
+    # turn around DNA
+    dna = dna[::-1]
+
+    for character in dna:
+        if character in reverse_mapping.keys():
+            reverse_dna = reverse_dna + reverse_mapping[character]
+        else:
+            raise Exception(f"Bad character in DNA!: {character}")
+
+    return reverse_dna
+
+
 chromosome_to_head_mapping = {"1": "CM000663.2", "2": "CM000664.2", "3": "CM000665.2", "4": "CM000666.2", "5": "CM000667.2",
                               "6": "CM000668.2", "7": "CM000668.2", "8": "CM000670.2", "9": "CM000671.2", "10": "CM000672.2",
                               "11": "CM000673.2", "12": "CM000674.2", "13": "CM000675.2", "14": "CM000676.2",
@@ -250,12 +266,23 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 pro_seqs = []
                 for i in range(int(len(as_events) / 3)):
                     full_seq = ""
-                    for seq in as_events[str(i) + "a"].values():
-                        full_seq = full_seq + seq
+
+                    # differentiate between + and - strand
+                    if "strand" in data[old_gene_name].keys():
+                        if data[old_gene_name]["strand"] == "+":
+                            for seq in as_events[str(i) + "a"].values():
+                                full_seq = full_seq + seq
+                        else:
+                            for seq in list(as_events[str(i) + "a"].values())[::-1]:
+                                full_seq = full_seq + seq
 
                     # check whether there is even 1 CDS entry
-                    if len(as_events[i]) != 0:
-                        pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][0]["frame"]))
+                    if full_seq != "":
+                        # differentiate between first or last CDS entry for frame
+                        if data[old_gene_name]["strand"] == "+":
+                            pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][0]["frame"]))
+                        else:
+                            pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][len(as_events[i]) - 1]["frame"]))
                     else:
                         pro_seqs.append("-")
 
@@ -303,7 +330,14 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     for record in sequences:
                         if record.id == chromosome_to_head_mapping[data[gene_name]["chromosome"]]:
                             region_seq = record.seq[start-1:stop]
-                            extracted_sequences[j] = str(region_seq)
+
+                            # Turn around sequence for reverse strand
+                            if strand == "+":
+                                extracted_sequences[j] = str(region_seq)
+                            else:
+                                extracted_sequences[j] = reverse_complement(str(region_seq))
+
+                            # record id found end loop
                             break
 
             # remember old gene id and increment CDS counter
