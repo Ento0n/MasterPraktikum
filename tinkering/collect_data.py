@@ -204,7 +204,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
     CDSs = {}
     extracted_sequences = {}
     as_events = {}
-    aa_sequences = {}
     old_gene_id = ""
     old_gene_name = ""
     old_start = ""
@@ -243,9 +242,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 # add last collected CDSs
                 as_events[i] = CDSs.copy()
                 as_events[str(i) + "a"] = extracted_sequences.copy()
-                as_events[str(i) + "b"] = aa_sequences.copy()
                 extracted_sequences.clear()
-                aa_sequences.clear()
                 CDSs.clear()
                 j = 0
 
@@ -292,9 +289,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 if gene_id == old_gene_id and start < old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
-                    as_events[str(i) + "b"] = aa_sequences.copy()
                     extracted_sequences.clear()
-                    aa_sequences.clear()
                     CDSs.clear()
                     j = 0
                     i += 1
@@ -302,9 +297,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 if gene_id == old_gene_id and start > old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
-                    as_events[str(i) + "b"] = aa_sequences.copy()
                     extracted_sequences.clear()
-                    aa_sequences.clear()
                     CDSs.clear()
                     j = 0
                     i += 1
