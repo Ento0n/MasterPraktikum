@@ -274,12 +274,11 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
                     # check whether there is even 1 CDS entry
                     if full_seq != "":
-                        # differentiate between first or last CDS entry for frame
                         pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][0]["frame"]))
                     else:
                         pro_seqs.append("-")
 
-                data[old_gene_name]["protein_sequences"] = pro_seqs
+                data[old_gene_name]["protein_sequences"] = ",".join(pro_seqs)
 
                 data[old_gene_name]["CDSs"] = as_events.copy()
                 as_events.clear()

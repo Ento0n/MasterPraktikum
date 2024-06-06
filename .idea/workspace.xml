@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
     </list>
@@ -107,7 +108,8 @@
       <workItem from="1717409314779" duration="8412000" />
       <workItem from="1717490311331" duration="12030000" />
       <workItem from="1717574286360" duration="8911000" />
-      <workItem from="1717667753536" duration="3287000" />
+      <workItem from="1717667753536" duration="8256000" />
+      <workItem from="1717681176796" duration="3606000" />
     </task>
     <servers />
   </component>
