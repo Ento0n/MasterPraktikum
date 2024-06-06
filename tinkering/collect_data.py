@@ -110,7 +110,7 @@ def convert_nuc2aa(dna: str, frame: int):
 
 
 def reverse_complement(dna: str):
-    reverse_mapping = {"A": "T", "T": "A", "G": "C", "C": "G", "a": "t", "t": "a", "g": "c", "c": "g"}
+    reverse_mapping = {"A": "T", "T": "A", "G": "C", "C": "G", "a": "t", "t": "a", "g": "c", "c": "g", "N": "N", "n": "n"}
     reverse_dna = ""
 
     # turn around DNA
@@ -269,20 +269,13 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
                     # differentiate between + and - strand
                     if "strand" in data[old_gene_name].keys():
-                        if data[old_gene_name]["strand"] == "+":
-                            for seq in as_events[str(i) + "a"].values():
-                                full_seq = full_seq + seq
-                        else:
-                            for seq in list(as_events[str(i) + "a"].values())[::-1]:
-                                full_seq = full_seq + seq
+                        for seq in as_events[str(i) + "a"].values():
+                            full_seq = full_seq + seq
 
                     # check whether there is even 1 CDS entry
                     if full_seq != "":
                         # differentiate between first or last CDS entry for frame
-                        if data[old_gene_name]["strand"] == "+":
-                            pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][0]["frame"]))
-                        else:
-                            pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][len(as_events[i]) - 1]["frame"]))
+                        pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][0]["frame"]))
                     else:
                         pro_seqs.append("-")
 
