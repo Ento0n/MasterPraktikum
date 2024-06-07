@@ -10,15 +10,22 @@ for i, row in df.iterrows():
     flag = False
     uniprot_seq = row["uniprot_sequence"]
 
-    if bool(row["pseudogene"]):
-        flag = True
+    if row["protein_sequences"] is np.nan:
+        continue
 
-    if row["protein_sequences"] is not np.nan:
-        for sequence in row["protein_sequences"].split(","):
+    counter += 1
+
+    for sequence in row["protein_sequences"].split(","):
+        if sequence.endswith("*"):
             if sequence[:-1] == uniprot_seq:
+                flag = True
+        else:
+            if sequence == uniprot_seq:
                 flag = True
 
     if not flag:
         wrong_sequences[uniprot_seq] = row["protein_sequences"]
 
-print(len(wrong_sequences))
+print(f"sequences in general: {counter}")
+print(f"wrong sequences: {len(wrong_sequences)}")
+print(f"correct sequences: {counter - len(wrong_sequences)}")
