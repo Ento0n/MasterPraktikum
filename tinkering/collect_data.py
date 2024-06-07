@@ -254,20 +254,17 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
                 # add counter for coding sequences
                 cds_counter = []
-                for i in range(int(len(as_events) / 3)): # divide by 3 because of 0a & 0b and so on
+                for i in range(int(len(as_events) / 2)): # divide by 3 because of 0a & 0b and so on
                     cds_counter.append(len(as_events[i]))
                 data[old_gene_name]["cds_counter"] = cds_counter.copy()
                 cds_counter.clear()
 
                 # Add protein sequences as new column of df
                 pro_seqs = []
-                for i in range(int(len(as_events) / 3)):
+                for i in range(int(len(as_events) / 2)):
                     full_seq = ""
-
-                    # differentiate between + and - strand
-                    if "strand" in data[old_gene_name].keys():
-                        for seq in as_events[str(i) + "a"].values():
-                            full_seq = full_seq + seq
+                    for seq in as_events[str(i) + "a"].values():
+                        full_seq = full_seq + seq
 
                     # check whether there is even 1 CDS entry
                     if full_seq != "":
@@ -275,7 +272,15 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     else:
                         pro_seqs.append("-")
 
-                data[old_gene_name]["protein_sequences"] = ",".join(pro_seqs)
+                if old_gene_name == "IGLC7":
+                    print(pro_seqs)
+
+                if len(pro_seqs) > 1:
+                    data[old_gene_name]["protein_sequences"] = ",".join(pro_seqs)
+                elif len(pro_seqs) == 1:
+                    data[old_gene_name]["protein_sequences"] = pro_seqs[0]
+                else:
+                    data[old_gene_name]["protein_sequences"] = "-"
 
                 data[old_gene_name]["CDSs"] = as_events.copy()
                 as_events.clear()

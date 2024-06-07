@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_completeness_gff_GRCh38.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/check_completeness_gff_GRCh38.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +109,8 @@
       <workItem from="1717490311331" duration="12030000" />
       <workItem from="1717574286360" duration="8911000" />
       <workItem from="1717667753536" duration="8256000" />
-      <workItem from="1717681176796" duration="4201000" />
+      <workItem from="1717681176796" duration="4589000" />
+      <workItem from="1717744230651" duration="4179000" />
     </task>
     <servers />
   </component>

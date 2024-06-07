@@ -2,7 +2,7 @@
 uniprot2genbank_gene_ids = set()
 with open("output/uniprot_genebank_homo_sapiens.tsv") as f:
     for line in f:
-        gene_id = line.split("\t")[4]
+        gene_id = line.split("\t")[5]
         uniprot2genbank_gene_ids.add(gene_id)
 
 types = set()
@@ -15,9 +15,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
         types.add(line.split("\t")[2])
 
         if line.split("\t")[2] == "CDS" or line.split("\t")[2] == "pseudogene":
-            if line.split("\t")[0] != "NC_000001.11":
-                continue
-
             attributes = line.split("\t")[8]
 
             for item in attributes.split(";"):
@@ -35,8 +32,10 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
         refseq_gene_ids.add(gene_id)
 
 print(uniprot2genbank_gene_ids.difference(refseq_gene_ids))
+print(len(uniprot2genbank_gene_ids))
 print(len(uniprot2genbank_gene_ids.difference(refseq_gene_ids)))
 print(types)
+print(len(refseq_gene_ids))
 
 # check whether gene names is a better connection
 """
