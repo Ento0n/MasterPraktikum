@@ -231,6 +231,10 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
             gene_name = gene_id_gene_name_mapping[gene_id]
 
+            # in case an entry is already present, skip this one...
+            if "CDSs" in data[gene_name].keys():
+                continue
+
             data[gene_name]["pseudogene"] = False
             strand = line.split("\t")[6]
             data[gene_name]["strand"] = strand
@@ -245,12 +249,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 extracted_sequences.clear()
                 CDSs.clear()
                 j = 0
-
-                # in case an entry is already present, skip this one...
-                if "CDSs" in data[old_gene_name].keys():
-                    as_events.clear()
-                    i = 0
-                    continue
 
                 # add counter for coding sequences
                 cds_counter = []
@@ -271,9 +269,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                         pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][0]["frame"]))
                     else:
                         pro_seqs.append("-")
-
-                if old_gene_name == "IGLC7":
-                    print(pro_seqs)
 
                 if len(pro_seqs) > 1:
                     data[old_gene_name]["protein_sequences"] = ",".join(pro_seqs)
