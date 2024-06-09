@@ -5,6 +5,7 @@ df = pd.read_csv("output/uniprot_genebank_homo_sapiens.tsv", sep="\t", index_col
 
 wrong_sequences = {}
 counter = 0
+gene_names_correct = []
 
 for i, row in df.iterrows():
     flag = False
@@ -18,14 +19,17 @@ for i, row in df.iterrows():
     for sequence in row["protein_sequences"].split(","):
         if sequence.endswith("*"):
             if sequence[:-1] == uniprot_seq:
+                gene_names_correct.append(i)
                 flag = True
         else:
             if sequence == uniprot_seq:
+                gene_names_correct.append(i)
                 flag = True
 
     if not flag:
-        wrong_sequences[uniprot_seq] = row["protein_sequences"]
+        wrong_sequences[i] = [uniprot_seq, row["protein_sequences"]]
 
 print(f"sequences in general: {counter}")
-print(f"wrong sequences: {len(wrong_sequences)}")
 print(f"correct sequences: {counter - len(wrong_sequences)}")
+print(f"gene names correct sequences: {gene_names_correct}")
+print(f"wrong sequences: {len(wrong_sequences)}")
