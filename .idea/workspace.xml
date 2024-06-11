@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/tinkering/graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_extracting_chromosomes.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/check_extracting_chromosomes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +113,9 @@
       <workItem from="1717681176796" duration="4589000" />
       <workItem from="1717744230651" duration="13230000" />
       <workItem from="1717761258672" duration="557000" />
-      <workItem from="1717946511594" duration="9892000" />
+      <workItem from="1717946511594" duration="9935000" />
+      <workItem from="1718004157013" duration="1949000" />
+      <workItem from="1718088284069" duration="5334000" />
     </task>
     <servers />
   </component>

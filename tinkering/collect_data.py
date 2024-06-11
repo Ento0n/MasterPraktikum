@@ -266,7 +266,13 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
                     # check whether there is even 1 CDS entry
                     if full_seq != "":
-                        pro_seqs.append(convert_nuc2aa(full_seq, as_events[i][0]["frame"]))
+                        pro_seq = convert_nuc2aa(full_seq, as_events[i][0]["frame"])
+
+                        if pro_seq.endswith("*"):
+                            pro_seq = pro_seq[:-1]
+
+                        pro_seqs.append(pro_seq)
+
                     else:
                         pro_seqs.append("-")
 
