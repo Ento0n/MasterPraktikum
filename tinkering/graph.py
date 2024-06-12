@@ -1,8 +1,8 @@
 import plotly.graph_objects as go
 
 # Define the x values and original y values
-x_values = ["UniProt", "GenBank accession", "GenBank CDSs", "Pseudo genes", "Correct reconstructed"]
-original_y_values = [15224, 15201, 15155, 14916, 12082]
+x_values = ["UniProt", "GenBank accession", "GenBank CDSs", "Correct reconstructed"]
+original_y_values = [15224, 15201, 15155, 12321]
 
 # Convert the y values to percentages
 y_values = [value / original_y_values[0] * 100 for value in original_y_values]

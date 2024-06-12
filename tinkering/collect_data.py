@@ -292,7 +292,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
             # in case of multiple alternative sequencing events, add last CDSs collection to as_events
             if strand == "+":
-                if gene_id == old_gene_id and start < old_start:
+                if gene_id == old_gene_id and start < old_start or gene_id == old_gene_id and start == old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
                     extracted_sequences.clear()
@@ -300,7 +300,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     j = 0
                     i += 1
             else:
-                if gene_id == old_gene_id and start > old_start:
+                if gene_id == old_gene_id and start > old_start or gene_id == old_gene_id and start == old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
                     extracted_sequences.clear()
