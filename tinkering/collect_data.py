@@ -147,7 +147,7 @@ codon_table = {
     'TAG': '*',    # Stop
     'TGC': 'C',    # Cisteina
     'TGT': 'C',    # Cisteina
-    'TGA': '*',    # Stop
+    'TGA': 'U',    # Stop (Opal), But also a U in some cases
     'TGG': 'W',    # Triptofano
     'CTA': 'L',    # Leucina
     'CTC': 'L',    # Leucina
@@ -268,7 +268,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     if full_seq != "":
                         pro_seq = convert_nuc2aa(full_seq, as_events[i][0]["frame"])
 
-                        if pro_seq.endswith("*"):
+                        if pro_seq.endswith("*") or pro_seq.endswith("U"):
                             pro_seq = pro_seq[:-1]
 
                         pro_seqs.append(pro_seq)
