@@ -207,6 +207,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
     old_gene_id = ""
     old_gene_name = ""
     old_start = ""
+    old_stop = ""
     i = 0
     j = 0
     for line in tqdm(f):
@@ -289,10 +290,11 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
             # extract start
             start = int(line.split("\t")[3])
+            stop = int(line.split("\t")[4])
 
             # in case of multiple alternative sequencing events, add last CDSs collection to as_events
             if strand == "+":
-                if gene_id == old_gene_id and start < old_start or gene_id == old_gene_id and start == old_start:
+                if gene_id == old_gene_id and start < old_stop or gene_id == old_gene_id and start == old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
                     extracted_sequences.clear()
@@ -300,7 +302,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     j = 0
                     i += 1
             else:
-                if gene_id == old_gene_id and start > old_start or gene_id == old_gene_id and start == old_start:
+                if gene_id == old_gene_id and stop > old_start or gene_id == old_gene_id and start == old_start:
                     as_events[i] = CDSs.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
                     extracted_sequences.clear()
@@ -309,7 +311,6 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     i += 1
 
             # extract information
-            stop = int(line.split("\t")[4])
             frame = int(line.split("\t")[7])
 
             CDSs[j] = {"start": start, "stop": stop, "frame": frame}
@@ -335,6 +336,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             old_gene_id = gene_id
             old_gene_name = gene_name
             old_start = start
+            old_stop = stop
             j += 1
 
 

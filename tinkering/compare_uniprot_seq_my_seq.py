@@ -9,7 +9,8 @@ gene_names_correct = set()
 first_three_bases_correct = set()
 
 for i, row in df.iterrows():
-    flag = False
+    correct_flag = False
+    first_3_flag = False
     uniprot_seq = row["uniprot_sequence"]
 
     if row["protein_sequences"] is np.nan:
@@ -20,25 +21,21 @@ for i, row in df.iterrows():
     counter += 1
 
     for sequence in row["protein_sequences"].split(","):
-        if sequence.endswith("*"):
-            if sequence[:-1] == uniprot_seq:
-                gene_names_correct.add(i)
-                flag = True
-            elif sequence[:3] == uniprot_seq[:3] and strand == "+":
-                first_three_bases_correct.add(i)
-        else:
-            if sequence == uniprot_seq:
-                gene_names_correct.add(i)
-                flag = True
-            elif sequence[:3] == uniprot_seq[:3] and strand == "+":
-                first_three_bases_correct.add(i)
+        if sequence == uniprot_seq:
+            correct_flag = True
+        elif sequence[:3] == uniprot_seq[:3] and strand == "+":
+            first_3_flag = True
 
-    if not flag:
+    if correct_flag:
+        gene_names_correct.add(i)
+    elif first_3_flag:
+        first_three_bases_correct.add(i)
+    else:
         wrong_sequences.add(i)
 
 print(f"sequences in general: {counter}")
 print(f"correct sequences: {len(gene_names_correct)}")
 # print(f"gene names correct sequences: {gene_names_correct}")
 print(f"wrong sequences: {len(wrong_sequences)}")
-# print(f"wrong sequences: {wrong_sequences.keys()}")
+print(f"wrong sequences: {list(wrong_sequences)[:10]}")
 # print(f"only first 3 match, rest uncertain: {first_three_bases_correct}")
