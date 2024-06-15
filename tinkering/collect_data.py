@@ -268,7 +268,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                     if full_seq != "":
                         pro_seq = convert_nuc2aa(full_seq, as_events[i][0]["frame"])
 
-                        if pro_seq.endswith("*") or pro_seq.endswith("U"):
+                        if pro_seq.endswith("*") or pro_seq.endswith("U") or pro_seq.endswith("-"):
                             pro_seq = pro_seq[:-1]
 
                         pro_seqs.append(pro_seq)
