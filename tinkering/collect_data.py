@@ -300,7 +300,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             stop = int(line.split("\t")[4])
 
             # in case of multiple alternative sequencing events, add last CDSs collection to as_events
-            if not cds_chain:
+            if not cds_chain and gene_id == old_gene_id:
                 as_events[i] = CDSs.copy()
                 as_events[str(i) + "a"] = extracted_sequences.copy()
                 extracted_sequences.clear()
