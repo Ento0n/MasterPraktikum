@@ -110,7 +110,8 @@ def convert_nuc2aa(dna: str, frame: int):
 
 
 def reverse_complement(dna: str):
-    reverse_mapping = {"A": "T", "T": "A", "G": "C", "C": "G", "a": "t", "t": "a", "g": "c", "c": "g", "N": "N", "n": "n"}
+    reverse_mapping = {"A": "T", "T": "A", "G": "C", "C": "G",
+                       "a": "t", "t": "a", "g": "c", "c": "g", "N": "N", "n": "n"}
     reverse_dna = ""
 
     # turn around DNA
@@ -125,12 +126,13 @@ def reverse_complement(dna: str):
     return reverse_dna
 
 
-chromosome_to_head_mapping = {"1": "CM000663.2", "2": "CM000664.2", "3": "CM000665.2", "4": "CM000666.2", "5": "CM000667.2",
-                              "6": "CM000668.2", "7": "CM000668.2", "8": "CM000670.2", "9": "CM000671.2", "10": "CM000672.2",
-                              "11": "CM000673.2", "12": "CM000674.2", "13": "CM000675.2", "14": "CM000676.2",
-                              "15": "CM000677.2", "16": "CM000678.2", "17": "CM000679.2", "18": "CM000680.2",
-                              "19": "CM000680.2", "20": "CM000682.2", "21": "CM000683.2", "22": "CM000684.2",
-                              "X": "CM000685.2", "Y": "CM000686.2", "MT": "GL000209.2"}
+chromosome_to_head_mapping = {"1": "CM000663.2", "2": "CM000664.2", "3": "CM000665.2", "4": "CM000666.2",
+                              "5": "CM000667.2", "6": "CM000668.2", "7": "CM000668.2", "8": "CM000670.2",
+                              "9": "CM000671.2", "10": "CM000672.2", "11": "CM000673.2", "12": "CM000674.2",
+                              "13": "CM000675.2", "14": "CM000676.2", "15": "CM000677.2", "16": "CM000678.2",
+                              "17": "CM000679.2", "18": "CM000680.2", "19": "CM000680.2", "20": "CM000682.2",
+                              "21": "CM000683.2", "22": "CM000684.2", "X": "CM000685.2", "Y": "CM000686.2",
+                              "MT": "GL000209.2"}
 sequences = list(SeqIO.parse("data/GCA_000001405.29_GRCh38.p14_genomic.fna", "fasta"))
 codon_table = {
     'TCA': 'S',    # Serina
@@ -202,6 +204,7 @@ codon_table = {
 
 with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
     CDSs = {}
+    cds_chain = False
     extracted_sequences = {}
     as_events = {}
     old_gene_id = ""
@@ -224,7 +227,9 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
             data[gene_name]["pseudogene"] = True
 
-        if line.split("\t")[2] == "CDS":
+            cds_chain = False
+
+        elif line.split("\t")[2] == "CDS":
             gene_id = extract_gene_id_gff(line)
 
             if gene_id not in gene_id_gene_name_mapping.keys():
@@ -253,7 +258,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
 
                 # add counter for coding sequences
                 cds_counter = []
-                for i in range(int(len(as_events) / 2)): # divide by 3 because of 0a & 0b and so on
+                for i in range(int(len(as_events) / 2)):  # divide by 2 because of 0a and so on
                     cds_counter.append(len(as_events[i]))
                 data[old_gene_name]["cds_counter"] = cds_counter.copy()
                 cds_counter.clear()
@@ -263,6 +268,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 for i in range(int(len(as_events) / 2)):
                     full_seq = ""
                     for seq in as_events[str(i) + "a"].values():
+                        seq = str(seq)  # not necessary needed, but pycharm gives warning otherwise
                         full_seq = full_seq + seq
 
                     # check whether there is even 1 CDS entry
@@ -284,6 +290,7 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                 else:
                     data[old_gene_name]["protein_sequences"] = "-"
 
+                # add all collected alternative splicing events to the collected data
                 data[old_gene_name]["CDSs"] = as_events.copy()
                 as_events.clear()
                 i = 0
@@ -293,22 +300,13 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
             stop = int(line.split("\t")[4])
 
             # in case of multiple alternative sequencing events, add last CDSs collection to as_events
-            if strand == "+":
-                if gene_id == old_gene_id and start < old_stop or gene_id == old_gene_id and start == old_start:
-                    as_events[i] = CDSs.copy()
-                    as_events[str(i) + "a"] = extracted_sequences.copy()
-                    extracted_sequences.clear()
-                    CDSs.clear()
-                    j = 0
-                    i += 1
-            else:
-                if gene_id == old_gene_id and stop > old_start or gene_id == old_gene_id and start == old_start:
-                    as_events[i] = CDSs.copy()
-                    as_events[str(i) + "a"] = extracted_sequences.copy()
-                    extracted_sequences.clear()
-                    CDSs.clear()
-                    j = 0
-                    i += 1
+            if not cds_chain:
+                as_events[i] = CDSs.copy()
+                as_events[str(i) + "a"] = extracted_sequences.copy()
+                extracted_sequences.clear()
+                CDSs.clear()
+                j = 0
+                i += 1
 
             # extract information
             frame = int(line.split("\t")[7])
@@ -332,12 +330,16 @@ with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
                             # record id found end loop
                             break
 
-            # remember old gene id and increment CDS counter
+            # remember old gene id and increment CDS counter, also indicated that cds has been processed
+            cds_chain = True
             old_gene_id = gene_id
             old_gene_name = gene_name
             old_start = start
             old_stop = stop
             j += 1
+
+        else:
+            cds_chain = False
 
 
 # convert to pandas dataframe
