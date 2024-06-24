@@ -5,32 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MasterPraktikum.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MasterPraktikum.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/UniProtStatus" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/correct_gene_names" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/domains_10_chunks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/domains_15_chunks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/domains_1_chunks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/domains_25_chunks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/domains_2_chunks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/domains_3_chunks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/domains_5_chunks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/ReadCathDomainList.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/ReadCathDomainList.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/UniProtKBRequests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/UniProtKBRequests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/check_DNA2AA.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_DNA2AA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/check_completeness_gene_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_completeness_gene_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/check_completeness_gff_GRCh38.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_completeness_gff_GRCh38.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/check_extracting_chromosomes.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_extracting_chromosomes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/check_genome_file.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_genome_file.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/check_gff_chromosomes.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_gff_chromosomes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/compare_dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_dfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/compare_geneInfo_gene2accession.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_geneInfo_gene2accession.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_uniprot_seq_my_seq.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/graphs/graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/test_pyGenomeViz.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/graphs/test_pyGenomeViz.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,20 +32,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/anton/PycharmProjects/MasterPraktikum/data&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/anton/PycharmProjects/MasterPraktikum/data",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data" />
@@ -157,7 +133,7 @@
       <workItem from="1718783174798" duration="928000" />
       <workItem from="1718956482789" duration="7926000" />
       <workItem from="1719214215476" duration="4040000" />
-      <workItem from="1719235935619" duration="5452000" />
+      <workItem from="1719235935619" duration="8749000" />
     </task>
     <servers />
   </component>
