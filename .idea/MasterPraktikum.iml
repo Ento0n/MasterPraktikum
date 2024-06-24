@@ -4,6 +4,8 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/data/genomes/homo_sapiens" />
       <excludeFolder url="file://$MODULE_DIR$/data/genomes/mus_musculus" />
+      <excludeFolder url="file://$MODULE_DIR$/data/genomes" />
+      <excludeFolder url="file://$MODULE_DIR$/src/tinkering" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

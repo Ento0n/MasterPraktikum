@@ -5,12 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/data/sample.gff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tinkering/test_pyGenomeViz.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/MasterPraktikum.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MasterPraktikum.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/UniProtStatus" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/correct_gene_names" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/domains_10_chunks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/domains_15_chunks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/domains_1_chunks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/domains_25_chunks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/domains_2_chunks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/domains_3_chunks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/domains_5_chunks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/ReadCathDomainList.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/ReadCathDomainList.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/UniProtKBRequests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/UniProtKBRequests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_DNA2AA.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_DNA2AA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_completeness_gene_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_completeness_gene_info.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_completeness_gff_GRCh38.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_completeness_gff_GRCh38.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_extracting_chromosomes.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_extracting_chromosomes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_genome_file.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_genome_file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/check_gff_chromosomes.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/testing/check_gff_chromosomes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/compare_dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_dfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/compare_geneInfo_gene2accession.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_geneInfo_gene2accession.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_uniprot_seq_my_seq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/graphs/graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/test_pyGenomeViz.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/graphs/test_pyGenomeViz.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,9 +76,11 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/tinkering/graphs" />
+      <recent name="$PROJECT_DIR$/src/tinkering/testing" />
+      <recent name="$PROJECT_DIR$/src/tinkering/comparing" />
       <recent name="$PROJECT_DIR$/data/genomes/mus_musculus" />
       <recent name="$PROJECT_DIR$/data/genomes/homo_sapiens" />
-      <recent name="$PROJECT_DIR$/data" />
     </key>
   </component>
   <component name="RunManager">
@@ -135,7 +157,7 @@
       <workItem from="1718783174798" duration="928000" />
       <workItem from="1718956482789" duration="7926000" />
       <workItem from="1719214215476" duration="4040000" />
-      <workItem from="1719235935619" duration="3594000" />
+      <workItem from="1719235935619" duration="5452000" />
     </task>
     <servers />
   </component>
