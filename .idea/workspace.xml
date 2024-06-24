@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/data/sample.gff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tinkering/test_pyGenomeViz.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinkering/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/collect_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/tinkering/compare_uniprot_seq_my_seq.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +54,11 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/genomes/mus_musculus" />
+      <recent name="$PROJECT_DIR$/data/genomes/homo_sapiens" />
+      <recent name="$PROJECT_DIR$/data" />
     </key>
   </component>
   <component name="RunManager">
@@ -119,7 +129,13 @@
       <workItem from="1718188236464" duration="7224000" />
       <workItem from="1718196949238" duration="891000" />
       <workItem from="1718461543278" duration="4924000" />
-      <workItem from="1718613166263" duration="4672000" />
+      <workItem from="1718613166263" duration="5092000" />
+      <workItem from="1718692564443" duration="16772000" />
+      <workItem from="1718779287954" duration="2073000" />
+      <workItem from="1718783174798" duration="928000" />
+      <workItem from="1718956482789" duration="7926000" />
+      <workItem from="1719214215476" duration="4040000" />
+      <workItem from="1719235935619" duration="3594000" />
     </task>
     <servers />
   </component>
@@ -152,6 +168,6 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/MasterPraktikum$test_collect_data.coverage" NAME="test collect_data Coverage Results" MODIFIED="1717332583719" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/MasterPraktikum$test_collect_data.coverage" NAME="test collect_data Coverage Results" MODIFIED="1718713798716" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
   </component>
 </project>

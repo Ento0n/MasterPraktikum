@@ -65,7 +65,7 @@ with open("data/gene2accession") as f:
 
         genome_accessions[genome_accession] = f"{start}:{end}"
 
-        # remember old gene name for saving all genome accesions in 1 dictionary
+        # remember old gene name for saving all genome accessions in 1 dictionary
         old_gene_name = gene_name
 
 # extract coding sequences (CDS) from .gff-file
@@ -126,14 +126,16 @@ def reverse_complement(dna: str):
     return reverse_dna
 
 
-chromosome_to_head_mapping = {"1": "CM000663.2", "2": "CM000664.2", "3": "CM000665.2", "4": "CM000666.2",
-                              "5": "CM000667.2", "6": "CM000668.2", "7": "CM000668.2", "8": "CM000670.2",
-                              "9": "CM000671.2", "10": "CM000672.2", "11": "CM000673.2", "12": "CM000674.2",
-                              "13": "CM000675.2", "14": "CM000676.2", "15": "CM000677.2", "16": "CM000678.2",
-                              "17": "CM000679.2", "18": "CM000680.2", "19": "CM000680.2", "20": "CM000682.2",
-                              "21": "CM000683.2", "22": "CM000684.2", "X": "CM000685.2", "Y": "CM000686.2",
-                              "MT": "GL000209.2"}
-sequences = list(SeqIO.parse("data/GCA_000001405.29_GRCh38.p14_genomic.fna", "fasta"))
+# translation of chromosome number to RefSeq chromosome ID
+chromosome_to_head_mapping = {"1": "NC_000001.11", "2": "NC_000002.12", "3": "NC_000003.12", "4": "NC_000004.12",
+                              "5": "NC_000005.10", "6": "NC_000006.12", "7": "NC_000007.14", "8": "NC_000008.11",
+                              "9": "NC_000009.12", "10": "NC_000010.11", "11": "NC_000011.10", "12": "NC_000012.12",
+                              "13": "NC_000013.11", "14": "NC_000014.9", "15": "NC_000015.10", "16": "NC_000016.10",
+                              "17": "NC_000017.11", "18": "NC_000018.10", "19": "NC_000019.10", "20": "NC_000020.11",
+                              "21": "NC_000021.9", "22": "NC_000022.11", "X": "NC_000023.11", "Y": "NC_000024.10",
+                              "MT": "NC_012920.1"}
+
+sequences = list(SeqIO.parse("data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.fna", "fasta"))
 codon_table = {
     'TCA': 'S',    # Serina
     'TCC': 'S',    # Serina
@@ -202,7 +204,7 @@ codon_table = {
 }
 
 
-with open("data/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
+with open("data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.gff") as f:
     CDSs = {}
     cds_chain = False
     extracted_sequences = {}
