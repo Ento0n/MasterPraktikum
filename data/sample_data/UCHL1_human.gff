@@ -19,6 +19,3 @@ NC_000004.12	BestRefSeq	CDS	41261876	41261923	.	+	0	ID=cds-NP_004172.2;Parent=rn
 NC_000004.12	BestRefSeq	CDS	41263225	41263291	.	+	0	ID=cds-NP_004172.2;Parent=rna-NM_004181.5;Dbxref=CCDS:CCDS3462.1,Ensembl:ENSP00000284440.4,GeneID:7345,GenBank:NP_004172.2,HGNC:HGNC:12513,MIM:191342;Name=NP_004172.2;gbkey=CDS;gene=UCHL1;product=ubiquitin carboxyl-terminal hydrolase isozyme L1;protein_id=NP_004172.2;tag=MANE Select
 NC_000004.12	BestRefSeq	CDS	41264103	41264161	.	+	2	ID=cds-NP_004172.2;Parent=rna-NM_004181.5;Dbxref=CCDS:CCDS3462.1,Ensembl:ENSP00000284440.4,GeneID:7345,GenBank:NP_004172.2,HGNC:HGNC:12513,MIM:191342;Name=NP_004172.2;gbkey=CDS;gene=UCHL1;product=ubiquitin carboxyl-terminal hydrolase isozyme L1;protein_id=NP_004172.2;tag=MANE Select
 NC_000004.12	BestRefSeq	CDS	41267987	41268073	.	+	0	ID=cds-NP_004172.2;Parent=rna-NM_004181.5;Dbxref=CCDS:CCDS3462.1,Ensembl:ENSP00000284440.4,GeneID:7345,GenBank:NP_004172.2,HGNC:HGNC:12513,MIM:191342;Name=NP_004172.2;gbkey=CDS;gene=UCHL1;product=ubiquitin carboxyl-terminal hydrolase isozyme L1;protein_id=NP_004172.2;tag=MANE Select
-# UCHL1 for mouse, manually extracted
-5   Toni    gene    66833633    66844268    .   +   .   -
-5   Toni    CDS 66833633

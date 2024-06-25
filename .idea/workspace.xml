@@ -5,8 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/data/sample_data/BAP1_human.gff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/sample_data/BAP1_mouse.gff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/sample_data/UCHL1_human.gff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/sample_data/UCHL1_mouse.gff" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sample.gff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gff_sample_features.png" beforeDir="false" afterPath="$PROJECT_DIR$/gff_sample_features.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lost_entries_human.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/lost_entries_human.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tinkering/graphs/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/graphs/graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tinkering/graphs/test_pyGenomeViz.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/graphs/test_pyGenomeViz.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,11 +60,11 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/sample_data" />
       <recent name="$PROJECT_DIR$/data/genomes/mus_musculus" />
       <recent name="$PROJECT_DIR$/src/tinkering/graphs" />
       <recent name="$PROJECT_DIR$/src/tinkering/testing" />
       <recent name="$PROJECT_DIR$/src/tinkering/comparing" />
-      <recent name="$PROJECT_DIR$/data/genomes/homo_sapiens" />
     </key>
   </component>
   <component name="RunManager">
@@ -134,7 +142,7 @@
       <workItem from="1718956482789" duration="7926000" />
       <workItem from="1719214215476" duration="4040000" />
       <workItem from="1719235935619" duration="9239000" />
-      <workItem from="1719307268141" duration="2677000" />
+      <workItem from="1719307268141" duration="12888000" />
     </task>
     <servers />
   </component>
