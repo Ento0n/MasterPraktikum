@@ -217,6 +217,26 @@ def reverse_complement(dna: str):
     return reverse_dna
 
 
+def cds2seq(start: int, stop: int, sequences, sequence_region: str, strand: str):
+    seq = ""
+
+    # extract sequence out of genome fasta file
+    for record in sequences:
+        if record.id == sequence_region:
+            region_seq = record.seq[start - 1:stop]
+
+            # Turn around sequence for reverse strand
+            if strand == "+":
+                seq = str(region_seq)
+            else:
+                seq = reverse_complement(str(region_seq))
+
+            # record id found end loop
+            break
+
+    return seq
+
+
 def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
     with open(path) as f:
         CDSs = {}
@@ -327,22 +347,8 @@ def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
 
                 CDSs[j] = {"start": start, "stop": stop, "frame": frame}
 
-                # filter out chromosome names I cannot map
-                if data[gene_name]["chromosome"] != "-":
-                    if data[gene_name]["chromosome"] != "X|Y":
-                        # extract sequence out of genome fasta file
-                        for record in sequences:
-                            if record.id == chromosome_to_head_mapping[data[gene_name]["chromosome"]]:
-                                region_seq = record.seq[start-1:stop]
-
-                                # Turn around sequence for reverse strand
-                                if strand == "+":
-                                    extracted_sequences[j] = str(region_seq)
-                                else:
-                                    extracted_sequences[j] = reverse_complement(str(region_seq))
-
-                                # record id found end loop
-                                break
+                # extract sequence out of genome fasta file
+                extracted_sequences[j] = cds2seq(start, stop, sequences, sequence_region, strand)
 
                 # remember old gene id and increment CDS counter, also indicated that cds has been processed
                 cds_chain = True
