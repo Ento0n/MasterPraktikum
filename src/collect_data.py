@@ -71,18 +71,8 @@ codon_table = {
 }
 
 
-# translation of chromosome number to RefSeq chromosome ID
-chromosome_to_head_mapping = {"1": "NC_000001.11", "2": "NC_000002.12", "3": "NC_000003.12", "4": "NC_000004.12",
-                              "5": "NC_000005.10", "6": "NC_000006.12", "7": "NC_000007.14", "8": "NC_000008.11",
-                              "9": "NC_000009.12", "10": "NC_000010.11", "11": "NC_000011.10", "12": "NC_000012.12",
-                              "13": "NC_000013.11", "14": "NC_000014.9", "15": "NC_000015.10", "16": "NC_000016.10",
-                              "17": "NC_000017.11", "18": "NC_000018.10", "19": "NC_000019.10", "20": "NC_000020.11",
-                              "21": "NC_000021.9", "22": "NC_000022.11", "X": "NC_000023.11", "Y": "NC_000024.10",
-                              "MT": "NC_012920.1"}
-
-
 # get gene names, cath supaerfamily, pdb ID and protein sequence from UniProt
-def read_uniprot_tsv(path: str, data: dict):
+def read_uniprot_tsv(path: str, data_fct: dict):
     with open(path) as f:
         for line in tqdm(f):
             if line.startswith("Entry"):
@@ -96,11 +86,12 @@ def read_uniprot_tsv(path: str, data: dict):
             if uniprot_gene_name.endswith(";"):
                 uniprot_gene_name = uniprot_gene_name[:-1]
 
-            data[uniprot_gene_name] = {"cath_superfamily": cath_superfamily, "pdb_id": pdb_id, "uniprot_sequence": uniprot_sequence}
+            data_fct[uniprot_gene_name] = dict(cath_superfamily=cath_superfamily, pdb_id=pdb_id,
+                                               uniprot_sequence=uniprot_sequence)
 
 
 # extract chromosomes from gene_info
-def read_gene_info(path: str, data: dict):
+def read_gene_info(path: str, data_fct: dict):
     gene_id_gene_name_mapping = {}
     with open(path) as f:
         for line in tqdm(f):
@@ -111,16 +102,16 @@ def read_gene_info(path: str, data: dict):
             chromosome = line.split("\t")[6]
             gene_id = line.split("\t")[1]
 
-            if gene_name in data.keys():
-                data[gene_name]["chromosome"] = chromosome
-                data[gene_name]["gene_id"] = gene_id
+            if gene_name in data_fct.keys():
+                data_fct[gene_name]["chromosome"] = chromosome
+                data_fct[gene_name]["gene_id"] = gene_id
                 gene_id_gene_name_mapping[gene_id] = gene_name
 
     return gene_id_gene_name_mapping
 
 
 # extract genomic locations from gene2accession
-def read_gene2accession(path: str, data: dict):
+def read_gene2accession(path: str, data_fct: dict):
     with open(path) as f:
         genome_accessions = {}
         old_gene_name = ""
@@ -135,12 +126,12 @@ def read_gene2accession(path: str, data: dict):
             gene_name = line.split("\t")[15].strip()
 
             # skip entries that cannot be mapped
-            if gene_name not in data.keys():
+            if gene_name not in data_fct.keys():
                 continue
 
             # clear the record of genomic accesions in case new gene is handled
             if gene_name != old_gene_name:
-                data[old_gene_name]["genome_accessions"] = genome_accessions.copy()
+                data_fct[old_gene_name]["genome_accessions"] = genome_accessions.copy()
                 genome_accessions.clear()
 
             genome_accession = line.split("\t")[12]
@@ -154,9 +145,9 @@ def read_gene2accession(path: str, data: dict):
 
 
 def read_genome_fasta():
-    sequences = list(SeqIO.parse("data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.fna", "fasta"))
+    sequences_fct = list(SeqIO.parse("data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.fna", "fasta"))
 
-    return sequences
+    return sequences_fct
 
 
 # extract gene ID number from gff file
@@ -217,11 +208,11 @@ def reverse_complement(dna: str):
     return reverse_dna
 
 
-def cds2seq(start: int, stop: int, sequences, sequence_region: str, strand: str):
+def cds2seq(start: int, stop: int, sequences_fct, sequence_region: str, strand: str):
     seq = ""
 
     # extract sequence out of genome fasta file
-    for record in sequences:
+    for record in sequences_fct:
         if record.id == sequence_region:
             region_seq = record.seq[start - 1:stop]
 
@@ -237,9 +228,9 @@ def cds2seq(start: int, stop: int, sequences, sequence_region: str, strand: str)
     return seq
 
 
-def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
+def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping: dict):
     with open(path) as f:
-        CDSs = {}
+        cdss = {}
         cds_chain = False
         extracted_sequences = {}
         as_events = {}
@@ -259,7 +250,7 @@ def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
 
                 gene_name = gene_id_gene_name_mapping[gene_id]
 
-                data[gene_name]["pseudogene"] = True
+                data_fct[gene_name]["pseudogene"] = True
 
                 cds_chain = False
 
@@ -272,29 +263,29 @@ def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
                 gene_name = gene_id_gene_name_mapping[gene_id]
 
                 # in case an entry is already present, skip this one...
-                if "CDSs" in data[gene_name].keys():
+                if "CDSs" in data_fct[gene_name].keys():
                     continue
 
-                data[gene_name]["pseudogene"] = False
+                data_fct[gene_name]["pseudogene"] = False
                 strand = line.split("\t")[6]
-                data[gene_name]["strand"] = strand
+                data_fct[gene_name]["strand"] = strand
                 sequence_region = line.split("\t")[0]
-                data[gene_name]["gff_sequence_region"] = sequence_region
+                data_fct[gene_name]["gff_sequence_region"] = sequence_region
 
                 # clear the record of CDSs in case new gene is handled
                 if gene_id != old_gene_id:
                     # add last collected CDSs
-                    as_events[i] = CDSs.copy()
+                    as_events[i] = cdss.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
                     extracted_sequences.clear()
-                    CDSs.clear()
+                    cdss.clear()
                     j = 0
 
                     # add counter for coding sequences
                     cds_counter = []
                     for i in range(int(len(as_events) / 2)):  # divide by 2 because of 0a and so on
                         cds_counter.append(len(as_events[i]))
-                    data[old_gene_name]["cds_counter"] = cds_counter.copy()
+                    data_fct[old_gene_name]["cds_counter"] = cds_counter.copy()
                     cds_counter.clear()
 
                     # Add protein sequences as new column of df
@@ -307,7 +298,7 @@ def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
 
                         # check whether there is even 1 CDS entry
                         if full_seq != "":
-                            pro_seq = convert_nuc2aa(full_seq, as_events[i][0]["frame"])
+                            pro_seq = convert_nuc2aa(full_seq, int(as_events[i][0]["frame"]))
 
                             if pro_seq.endswith("*") or pro_seq.endswith("U") or pro_seq.endswith("-"):
                                 pro_seq = pro_seq[:-1]
@@ -318,14 +309,14 @@ def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
                             pro_seqs.append("-")
 
                     if len(pro_seqs) > 1:
-                        data[old_gene_name]["protein_sequences"] = ",".join(pro_seqs)
+                        data_fct[old_gene_name]["protein_sequences"] = ",".join(pro_seqs)
                     elif len(pro_seqs) == 1:
-                        data[old_gene_name]["protein_sequences"] = pro_seqs[0]
+                        data_fct[old_gene_name]["protein_sequences"] = pro_seqs[0]
                     else:
-                        data[old_gene_name]["protein_sequences"] = "-"
+                        data_fct[old_gene_name]["protein_sequences"] = "-"
 
                     # add all collected alternative splicing events to the collected data
-                    data[old_gene_name]["CDSs"] = as_events.copy()
+                    data_fct[old_gene_name]["CDSs"] = as_events.copy()
                     as_events.clear()
                     i = 0
 
@@ -335,20 +326,20 @@ def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
 
                 # in case of multiple alternative sequencing events, add last CDSs collection to as_events
                 if not cds_chain and gene_id == old_gene_id:
-                    as_events[i] = CDSs.copy()
+                    as_events[i] = cdss.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
                     extracted_sequences.clear()
-                    CDSs.clear()
+                    cdss.clear()
                     j = 0
                     i += 1
 
                 # extract information
                 frame = int(line.split("\t")[7])
 
-                CDSs[j] = {"start": start, "stop": stop, "frame": frame}
+                cdss[j] = {"start": start, "stop": stop, "frame": frame}
 
                 # extract sequence out of genome fasta file
-                extracted_sequences[j] = cds2seq(start, stop, sequences, sequence_region, strand)
+                extracted_sequences[j] = cds2seq(start, stop, sequences_fct, sequence_region, strand)
 
                 # remember old gene id and increment CDS counter, also indicated that cds has been processed
                 cds_chain = True
@@ -361,8 +352,8 @@ def read_gff(path: str, data: dict, sequences, gene_id_gene_name_mapping: dict):
 
 
 # convert to pandas dataframe
-def print_data(path: str, data: dict):
-    df = pd.DataFrame.from_dict(data, orient="index")
+def print_data(path: str, data_fct: dict):
+    df = pd.DataFrame.from_dict(data_fct, orient="index")
     df.replace(to_replace="", value="NA")
     df.index.name = "gene_name"
     df.to_csv(path, sep="\t")
@@ -378,7 +369,7 @@ if __name__ == "__main__":
     read_gff("data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.gff", data, sequences,
              gene_id2gene_name_mapping)
 
-    print_data("output/uniprot_genebank_homo_sapiens.tsv", data)
+    print_data("output/uniprot_genbank_homo_sapiens.tsv", data)
 
 
 
