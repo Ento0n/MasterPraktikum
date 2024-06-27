@@ -228,6 +228,37 @@ def cds2seq(start: int, stop: int, sequences_fct, sequence_region: str, strand: 
     return seq
 
 
+def collect_prot_seqs(as_events: dict) -> str:
+    prot_seqs = []
+
+    for i in range(int(len(as_events) / 2)):
+        full_seq = ""
+        for seq in as_events[str(i) + "a"].values():
+            seq = str(seq)  # not necessary needed, but pycharm gives warning otherwise
+            full_seq = full_seq + seq
+
+        # check whether there is even 1 CDS entry
+        if full_seq != "":
+            pro_seq = convert_nuc2aa(full_seq, int(as_events[i][0]["frame"]))
+
+            if pro_seq.endswith("*") or pro_seq.endswith("U") or pro_seq.endswith("-"):
+                pro_seq = pro_seq[:-1]
+
+            prot_seqs.append(pro_seq)
+
+        else:
+            prot_seqs.append("-")
+
+    if len(prot_seqs) > 1:
+        prot_seq = ",".join(prot_seqs)
+    elif len(prot_seqs) == 1:
+        prot_seq = prot_seqs[0]
+    else:
+        prot_seq = "-"
+
+    return prot_seq
+
+
 def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping: dict):
     with open(path) as f:
         cdss = {}
@@ -289,40 +320,17 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                     cds_counter.clear()
 
                     # Add protein sequences as new column of df
-                    pro_seqs = []
-                    for i in range(int(len(as_events) / 2)):
-                        full_seq = ""
-                        for seq in as_events[str(i) + "a"].values():
-                            seq = str(seq)  # not necessary needed, but pycharm gives warning otherwise
-                            full_seq = full_seq + seq
-
-                        # check whether there is even 1 CDS entry
-                        if full_seq != "":
-                            pro_seq = convert_nuc2aa(full_seq, int(as_events[i][0]["frame"]))
-
-                            if pro_seq.endswith("*") or pro_seq.endswith("U") or pro_seq.endswith("-"):
-                                pro_seq = pro_seq[:-1]
-
-                            pro_seqs.append(pro_seq)
-
-                        else:
-                            pro_seqs.append("-")
-
-                    if len(pro_seqs) > 1:
-                        data_fct[old_gene_name]["protein_sequences"] = ",".join(pro_seqs)
-                    elif len(pro_seqs) == 1:
-                        data_fct[old_gene_name]["protein_sequences"] = pro_seqs[0]
-                    else:
-                        data_fct[old_gene_name]["protein_sequences"] = "-"
+                    data_fct[old_gene_name]["protein_sequences"] = collect_prot_seqs(as_events)
 
                     # add all collected alternative splicing events to the collected data
                     data_fct[old_gene_name]["CDSs"] = as_events.copy()
                     as_events.clear()
                     i = 0
 
-                # extract start
+                # extract information
                 start = int(line.split("\t")[3])
                 stop = int(line.split("\t")[4])
+                frame = int(line.split("\t")[7])
 
                 # in case of multiple alternative sequencing events, add last CDSs collection to as_events
                 if not cds_chain and gene_id == old_gene_id:
@@ -332,9 +340,6 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                     cdss.clear()
                     j = 0
                     i += 1
-
-                # extract information
-                frame = int(line.split("\t")[7])
 
                 cdss[j] = {"start": start, "stop": stop, "frame": frame}
 
@@ -351,7 +356,7 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                 cds_chain = False
 
 
-# convert to pandas dataframe
+# convert to pandas dataframe and save as .tsv-file
 def print_data(path: str, data_fct: dict):
     df = pd.DataFrame.from_dict(data_fct, orient="index")
     df.replace(to_replace="", value="NA")
