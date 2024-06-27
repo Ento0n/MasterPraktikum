@@ -1,6 +1,9 @@
+from typing import List
+
 import pandas as pd
 from tqdm import tqdm
 from Bio import SeqIO
+import argparse
 
 
 codon_table = {
@@ -144,8 +147,8 @@ def read_gene2accession(path: str, data_fct: dict):
             old_gene_name = gene_name
 
 
-def read_genome_fasta():
-    sequences_fct = list(SeqIO.parse("data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.fna", "fasta"))
+def read_genome_fasta(fna_file_path):
+    sequences_fct = list(SeqIO.parse(fna_file_path, "fasta"))
 
     return sequences_fct
 
@@ -168,6 +171,20 @@ def extract_gene_id_gff(line: str) -> str:
             # break outer for loop
             break
     return gene_id
+
+
+# extract gene name from gff file
+def extract_gene_name_gff(line: str) -> str:
+    gene_name = None
+
+    attributes = line.split("\t")[8]
+
+    for item in attributes.split(";"):
+        if item.split("=")[0] == "gene":
+            gene_name = item.split("=")[1]
+            break
+
+    return gene_name
 
 
 # translate nucleotide sequence to protein sequence
@@ -259,13 +276,12 @@ def collect_prot_seqs(as_events: dict) -> str:
     return prot_seq
 
 
-def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping: dict):
+def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping: dict = None):
     with open(path) as f:
         cdss = {}
         cds_chain = False
         extracted_sequences = {}
         as_events = {}
-        old_gene_id = ""
         old_gene_name = ""
         i = 0
         j = 0
@@ -274,24 +290,38 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                 continue
 
             if line.split("\t")[2] == "pseudogene":
-                gene_id = extract_gene_id_gff(line)
+                # check whether human organism is handled with gene ID or other with gene name
+                if gene_id_gene_name_mapping is not None:
+                    gene_id = extract_gene_id_gff(line)
 
-                if gene_id not in gene_id_gene_name_mapping.keys():
-                    continue
+                    if gene_id not in gene_id_gene_name_mapping.keys():
+                        continue
 
-                gene_name = gene_id_gene_name_mapping[gene_id]
+                    gene_name = gene_id_gene_name_mapping[gene_id]
+                else:
+                    gene_name = extract_gene_name_gff(line)
+
+                    if gene_name not in data_fct.keys():
+                        continue
 
                 data_fct[gene_name]["pseudogene"] = True
 
                 cds_chain = False
 
             elif line.split("\t")[2] == "CDS":
-                gene_id = extract_gene_id_gff(line)
+                # check whether human organism is handled with gene ID or other with gene name
+                if gene_id_gene_name_mapping is not None:
+                    gene_id = extract_gene_id_gff(line)
 
-                if gene_id not in gene_id_gene_name_mapping.keys():
-                    continue
+                    if gene_id not in gene_id_gene_name_mapping.keys():
+                        continue
 
-                gene_name = gene_id_gene_name_mapping[gene_id]
+                    gene_name = gene_id_gene_name_mapping[gene_id]
+                else:
+                    gene_name = extract_gene_name_gff(line)
+
+                    if gene_name not in data_fct.keys():
+                        continue
 
                 # in case an entry is already present, skip this one...
                 if "CDSs" in data_fct[gene_name].keys():
@@ -304,7 +334,7 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                 data_fct[gene_name]["gff_sequence_region"] = sequence_region
 
                 # clear the record of CDSs in case new gene is handled
-                if gene_id != old_gene_id:
+                if gene_name != old_gene_name:
                     # add last collected CDSs
                     as_events[i] = cdss.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
@@ -333,7 +363,7 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                 frame = int(line.split("\t")[7])
 
                 # in case of multiple alternative sequencing events, add last CDSs collection to as_events
-                if not cds_chain and gene_id == old_gene_id:
+                if not cds_chain and gene_name == old_gene_name:
                     as_events[i] = cdss.copy()
                     as_events[str(i) + "a"] = extracted_sequences.copy()
                     extracted_sequences.clear()
@@ -348,7 +378,6 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
 
                 # remember old gene id and increment CDS counter, also indicated that cds has been processed
                 cds_chain = True
-                old_gene_id = gene_id
                 old_gene_name = gene_name
                 j += 1
 
@@ -364,17 +393,59 @@ def print_data(path: str, data_fct: dict):
     df.to_csv(path, sep="\t")
 
 
-if __name__ == "__main__":
-    data = dict()
-    read_uniprot_tsv("data/uniprot_gene3d_human.tsv", data)
-    gene_id2gene_name_mapping = read_gene_info("data/gene_info", data)
-    read_gene2accession("data/gene2accession", data)
+def get_organism_paths(org) -> (str, str, str):
+    possible_organisms: list[str] = ["human", "mouse"]
 
-    sequences = read_genome_fasta()
-    read_gff("data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.gff", data, sequences,
+    if org == "human":
+        uniprot_path = "data/uniprot_gene3d_human.tsv"
+        gff_file_path = "data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.gff"
+        fna_file_path = "data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.fna"
+        out_file_path = "output/uniprot_genbank_homo_sapiens.tsv"
+    elif org == "mouse":
+        uniprot_path = "data/uniprot_gene3d_mouse.tsv"
+        gff_file_path = "data/genomes/mus_musculus/GCF_000001635.27_GRCm39_genomic.gff"
+        fna_file_path = "data/genomes/mus_musculus/GCF_000001635.27_GRCm39_genomic.fna"
+        out_file_path = "output/uniprot_genbank_mus_musculus.tsv"
+    else:
+        raise Exception(f"given organism cannot be processed, possible organisms: {possible_organisms}")
+
+    return uniprot_path, gff_file_path, fna_file_path, out_file_path
+
+
+if __name__ == "__main__":
+    # argument parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-o",
+        "--organism",
+        required=True,
+        type=str,
+        help=(
+            "Organism f.e. human, mouse... for which the data should be collected."
+        )
+    )
+    args = parser.parse_args()
+
+    # get organism to work with
+    organism = args.organism
+
+    # get paths for given organism
+    uni_path, gff_path, fna_path, out_path = get_organism_paths(organism)
+
+    data = dict()
+    read_uniprot_tsv(uni_path, data)
+
+    # only required for human organism
+    gene_id2gene_name_mapping = None
+    if organism == "human":
+        gene_id2gene_name_mapping = read_gene_info("data/gene_info", data)
+        read_gene2accession("data/gene2accession", data)
+
+    sequences = read_genome_fasta(fna_path)
+    read_gff(gff_path, data, sequences,
              gene_id2gene_name_mapping)
 
-    print_data("output/uniprot_genbank_homo_sapiens.tsv", data)
+    print_data(out_path, data)
 
 
 

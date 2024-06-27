@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv("output/uniprot_genbank_homo_sapiens.tsv", sep="\t", index_col=0)
+# df = pd.read_csv("output/uniprot_genbank_homo_sapiens.tsv", sep="\t", index_col=0)
+df = pd.read_csv("output/uniprot_genbank_mus_musculus.tsv", sep="\t", index_col=0)
 
 wrong_sequences = set()
 counter = 0

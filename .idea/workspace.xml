@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tinkering/comparing/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_uniprot_seq_my_seq.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,11 +54,11 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/data/sample_data" />
       <recent name="$PROJECT_DIR$/data/genomes/mus_musculus" />
       <recent name="$PROJECT_DIR$/src/tinkering/graphs" />
       <recent name="$PROJECT_DIR$/src/tinkering/testing" />
-      <recent name="$PROJECT_DIR$/src/tinkering/comparing" />
     </key>
   </component>
   <component name="RunManager">
@@ -136,7 +138,7 @@
       <workItem from="1719235935619" duration="9239000" />
       <workItem from="1719307268141" duration="13281000" />
       <workItem from="1719386508301" duration="1594000" />
-      <workItem from="1719471702564" duration="1298000" />
+      <workItem from="1719471702564" duration="6601000" />
     </task>
     <servers />
   </component>
