@@ -376,7 +376,7 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                 # extract sequence out of genome fasta file
                 extracted_sequences[j] = cds2seq(start, stop, sequences_fct, sequence_region, strand)
 
-                # remember old gene id and increment CDS counter, also indicated that cds has been processed
+                # remember old gene name and increment CDS counter, also indicated that cds has been processed
                 cds_chain = True
                 old_gene_name = gene_name
                 j += 1
