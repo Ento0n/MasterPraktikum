@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/create_synteny_plot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tinkering/comparing/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tinkering/comparing/compare_uniprot_seq_my_seq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/compare_uniprot_seq_my_seq.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,11 +54,11 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/data/sample_data" />
       <recent name="$PROJECT_DIR$/data/genomes/mus_musculus" />
       <recent name="$PROJECT_DIR$/src/tinkering/graphs" />
-      <recent name="$PROJECT_DIR$/src/tinkering/testing" />
     </key>
   </component>
   <component name="RunManager">
@@ -139,7 +140,8 @@
       <workItem from="1719386508301" duration="1594000" />
       <workItem from="1719471702564" duration="6831000" />
       <workItem from="1719571217484" duration="663000" />
-      <workItem from="1719648565499" duration="2417000" />
+      <workItem from="1719648565499" duration="4074000" />
+      <workItem from="1719738165595" duration="6079000" />
     </task>
     <servers />
   </component>

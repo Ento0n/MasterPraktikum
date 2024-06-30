@@ -81,7 +81,7 @@ def read_uniprot_tsv(path: str, data_fct: dict):
             if line.startswith("Entry"):
                 continue
 
-            uniprot_gene_name = line.split("\t")[4].split(" ")[0]
+            uniprot_gene_name = line.split("\t")[4].split(" ")[0].upper()
             cath_superfamily = line.split("\t")[7]
             pdb_id = line.split("\t")[8].strip()
             uniprot_sequence = line.split("\t")[9].strip()
