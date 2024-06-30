@@ -35,6 +35,7 @@ def check_correctly_translated(df: pd.DataFrame, v: bool):
 
         if row["protein_sequences"] is np.nan:
             correctly_translated[i] = False
+            correct_index[i] = "-"
             continue
 
         strand = row["strand"]

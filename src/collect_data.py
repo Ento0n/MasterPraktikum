@@ -181,7 +181,7 @@ def extract_gene_name_gff(line: str) -> str:
 
     for item in attributes.split(";"):
         if item.split("=")[0] == "gene":
-            gene_name = item.split("=")[1]
+            gene_name = item.split("=")[1].upper()  # all gene names are handled as upper case
             break
 
     return gene_name
