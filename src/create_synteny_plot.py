@@ -1,7 +1,7 @@
 import sys
 import ast
 
-import pygenomeviz
+from pygenomeviz import GenomeViz
 import argparse
 import pandas as pd
 
@@ -23,12 +23,17 @@ def extract_collected_info(orgs: [str], superf: str):
         selection_gene_names = set(selection.index.tolist())
         gene_names = gene_names & selection_gene_names
 
-    # get gene start and stop
-    starts_and_stops = dict()
+    # get gene start and stop and collect everything sorted by sequence region
+    sequence_region_list = dict()
     for selection in selections:
         # go through intersected genes
         for gene in gene_names:
-            correct_index = int(selection.at[gene, "correct_index"])
+            try:
+                correct_index = int(selection.at[gene, "correct_index"])
+            except ValueError:
+                print(f"gene {gene} of organism {selection.at[gene, 'organism']} could not be correctly"
+                      f"translated and is therefore not represented in the synteny plot!")
+                continue
 
             start = sys.maxsize
             stop = - sys.maxsize
@@ -41,8 +46,50 @@ def extract_collected_info(orgs: [str], superf: str):
                 if cds["stop"] > stop:
                     stop = cds["stop"]
 
-            # start and stop boundaries collected, save em!
-            starts_and_stops[gene + f"_{selection.at[gene, 'organism']}"] = (start, stop)
+            # sort stuff by gff sequence region
+            sequence_region = selection.at[gene, "gff_sequence_region"]
+
+            if sequence_region in sequence_region_list.keys():
+                # check whether start is larger or stop is smaller
+                if sequence_region_list[sequence_region]["start"] > start:
+                    sequence_region_list[sequence_region]["start"] = start
+                if sequence_region_list[sequence_region]["stop"] < stop:
+                    sequence_region_list[sequence_region]["stop"] = stop
+
+                # add gene to features
+                sequence_region_list[sequence_region]["features"].append(dict(
+                    name=gene + f"_{selection.at[gene, 'organism']}", strand=selection.at[gene, "strand"],
+                    start=start, stop=stop
+                ))
+            else:
+                sequence_region_list[sequence_region] = dict()
+                sequence_region_list[sequence_region]["start"] = start
+                sequence_region_list[sequence_region]["stop"] = stop
+                sequence_region_list[sequence_region]["features"] = [dict(
+                    name=gene + f"_{selection.at[gene, 'organism']}", strand=selection.at[gene, "strand"],
+                    start=start, stop=stop
+                )]
+
+    return sequence_region_list
+
+
+def create_plot(sequence_region_list: dict):
+    gv = GenomeViz(track_align_type="center")
+
+    print(sequence_region_list)
+
+    for sequence_region, attributes in sequence_region_list.items():
+        track = gv.add_feature_track(sequence_region, (attributes["start"], attributes["stop"]))
+
+        for feature in attributes["features"]:
+            if feature["strand"] == "+":
+                strand = +1
+            else:
+                strand = -1
+
+            track.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+
+    gv.savefig("test_plot.png")
 
 
 def get_organism_paths(orgs: [str]):
@@ -96,7 +143,10 @@ if __name__ == "__main__":
     org_paths = get_organism_paths(organisms)
 
     # extract needed infos from .tsv-file
-    extract_collected_info(org_paths, superfamily)
+    seq_reg_list = extract_collected_info(org_paths, superfamily)
+
+    # create the synteny plot
+    create_plot(seq_reg_list)
 
 
 

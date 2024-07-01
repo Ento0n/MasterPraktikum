@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/MasterPraktikum.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MasterPraktikum.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/create_synteny_plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_synteny_plot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -164,7 +162,7 @@
       <workItem from="1719571217484" duration="663000" />
       <workItem from="1719648565499" duration="4074000" />
       <workItem from="1719738165595" duration="8361000" />
-      <workItem from="1719813392013" duration="3569000" />
+      <workItem from="1719813392013" duration="9988000" />
     </task>
     <servers />
   </component>
