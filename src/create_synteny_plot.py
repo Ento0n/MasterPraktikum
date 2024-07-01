@@ -1,3 +1,6 @@
+import sys
+import ast
+
 import pygenomeviz
 import argparse
 import pandas as pd
@@ -20,10 +23,26 @@ def extract_collected_info(orgs: [str], superf: str):
         selection_gene_names = set(selection.index.tolist())
         gene_names = gene_names & selection_gene_names
 
+    # get gene start and stop
+    starts_and_stops = dict()
+    for selection in selections:
+        # go through intersected genes
+        for gene in gene_names:
+            correct_index = int(selection.at[gene, "correct_index"])
 
+            start = sys.maxsize
+            stop = - sys.maxsize
+            # go through CDSs of the correct as event
+            tmp_dict = ast.literal_eval(selection.at[gene, "CDSs"])
+            for cds in tmp_dict[correct_index].values():
+                # check start, and stop whether it is smaller or bigger than already extracted start and stop
+                if cds["start"] < start:
+                    start = cds["start"]
+                if cds["stop"] > stop:
+                    stop = cds["stop"]
 
-
-
+            # start and stop boundaries collected, save em!
+            starts_and_stops[gene + f"_{selection.at[gene, 'organism']}"] = (start, stop)
 
 
 def get_organism_paths(orgs: [str]):

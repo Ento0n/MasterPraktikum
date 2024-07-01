@@ -85,12 +85,13 @@ def read_uniprot_tsv(path: str, data_fct: dict):
             cath_superfamily = line.split("\t")[7]
             pdb_id = line.split("\t")[8].strip()
             uniprot_sequence = line.split("\t")[9].strip()
+            org = line.split("\t")[2].split("_")[1]
 
             if uniprot_gene_name.endswith(";"):
                 uniprot_gene_name = uniprot_gene_name[:-1]
 
             data_fct[uniprot_gene_name] = dict(cath_superfamily=cath_superfamily, pdb_id=pdb_id,
-                                               uniprot_sequence=uniprot_sequence)
+                                               uniprot_sequence=uniprot_sequence, organism=org)
 
 
 # extract chromosomes from gene_info
