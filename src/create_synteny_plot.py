@@ -10,13 +10,16 @@ def coordinates2segments(starts: list, stops: list):
     starts.sort()
     stops.sort()
 
+    # buffer around the starts and stop for nicer displaying
+    buffer = 5000
+
     segments = list()
-    next_segment_start = starts[0]
+    next_segment_start = starts[0] - buffer
     for i, stop in enumerate(stops):
         # check whether all are processed
         if i+1 == len(stops):
             # add last segment
-            segments.append((next_segment_start, stop))
+            segments.append((next_segment_start, stop + buffer))
 
             # end loop, all found
             break
@@ -27,11 +30,11 @@ def coordinates2segments(starts: list, stops: list):
         # check whether distance is higher than 60000, otherwise split into segments, avg length gene 62.000
         if start_next - stop > 60000:
             # create new segment
-            new_segment = (next_segment_start, stop + 5000)
+            new_segment = (next_segment_start, stop + buffer)
             segments.append(new_segment)
 
             # save next segment start for next new segment
-            next_segment_start = start_next - 5000
+            next_segment_start = start_next - buffer
 
     if not segments:
         segments.append((starts[0], stops[0]))
@@ -123,10 +126,17 @@ def extract_collected_info(orgs: [str], superf: str):
 
 
 def create_plot(sequence_region_list: dict):
-    gv = GenomeViz(track_align_type="center")
+    gv = GenomeViz(track_align_type="left")
 
     for sequence_region, attributes in sequence_region_list.items():
         track = gv.add_feature_track(sequence_region, segments=attributes["segments"])
+
+        # change seperator of the segments
+        track.set_segment_sep(symbol="//")  # is shifted around like crazy...only when track_align_type = center!
+
+        # add sub label for segments
+        for segment in track.segments:
+            segment.add_sublabel(size=6)
 
         for feature in attributes["features"]:
             if feature["strand"] == "+":
