@@ -1,6 +1,7 @@
 import sys
 import ast
 
+import pygenomeviz.exception
 from pygenomeviz import GenomeViz
 import argparse
 import pandas as pd
@@ -138,6 +139,7 @@ def create_plot(sequence_region_list: dict):
         for segment in track.segments:
             segment.add_sublabel(size=6)
 
+        # add features to track
         for feature in attributes["features"]:
             if feature["strand"] == "+":
                 strand = +1
@@ -149,6 +151,31 @@ def create_plot(sequence_region_list: dict):
                 if segment.start <= feature["start"] <= segment.start + segment.size:
                     segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
                     break
+
+    # add links to the plot
+    for sequence_region, attributes in sequence_region_list.items():
+        for feature in attributes["features"]:
+            gene = feature["name"].split("_")[0]
+
+            # go through other sequence regions
+            for tmp_sequence_region, tmp_attributes in sequence_region_list.items():
+                # skip the sequence region handled
+                if tmp_sequence_region == sequence_region:
+                    continue
+
+                for tmp_feature in tmp_attributes["features"]:
+                    tmp_gene = tmp_feature["name"].split("_")[0]
+
+                    # if same gene is found add link
+                    if tmp_gene == gene:
+                        try:
+                            gv.add_link((sequence_region, feature["start"], feature["stop"]),
+                                        (tmp_sequence_region, tmp_feature["start"], tmp_feature["stop"]))
+                        except pygenomeviz.exception.LinkTrackNotFoundError:
+                            print(f"Link between {sequence_region} and {tmp_sequence_region} for {gene} not possible, "
+                                  f"tracks not adjacent")
+
+                        break
 
     gv.savefig("test_plot.png")
 
