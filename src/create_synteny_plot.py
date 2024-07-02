@@ -16,17 +16,25 @@ def coordinates2segments(starts: list, stops: list):
 
     segments = list()
     next_segment_start = starts[0] - buffer
+    gene2exon_index = 0
+    index_list = list()
     for i, stop in enumerate(stops):
         # check whether all are processed
         if i+1 == len(stops):
             # add last segment
             segments.append((next_segment_start, stop + buffer))
 
+            # add index of last gene
+            index_list.append(gene2exon_index)
+
             # end loop, all found
             break
 
         # get second coordinate
         start_next = starts[i+1]
+
+        # add index to index list before check for new segment, always looking at next start
+        index_list.append(gene2exon_index)
 
         # check whether distance is higher than 60000, otherwise split into segments, avg length gene 62.000
         if start_next - stop > 60000:
@@ -37,10 +45,13 @@ def coordinates2segments(starts: list, stops: list):
             # save next segment start for next new segment
             next_segment_start = start_next - buffer
 
+            # new segment, increment counter
+            gene2exon_index += 1
+
     if not segments:
         segments.append((starts[0], stops[0]))
 
-    return segments
+    return segments, index_list
 
 
 def extract_collected_info(orgs: [str], superf: str):
@@ -116,8 +127,12 @@ def extract_collected_info(orgs: [str], superf: str):
                 stops.append(sequence_region_list[sequence_region]["features"][i]["stop"])
 
             # process starts and stops into segments
-            segments = coordinates2segments(starts, stops)
+            segments, index_list = coordinates2segments(starts, stops)
             sequence_region_list[sequence_region]["segments"] = segments
+
+            # add index to data
+            for i, index in enumerate(index_list):
+                sequence_region_list[sequence_region]["features"][i]["index"] = index
 
         # sort features by coordinates
         for attributes in sequence_region_list.values():
@@ -126,56 +141,119 @@ def extract_collected_info(orgs: [str], superf: str):
     return sequence_region_list
 
 
-def create_plot(sequence_region_list: dict):
+def create_plot(sequence_region_list: dict, wanted_sequence_regions):
     gv = GenomeViz(track_align_type="left")
 
-    for sequence_region, attributes in sequence_region_list.items():
-        track = gv.add_feature_track(sequence_region, segments=attributes["segments"])
+    if wanted_sequence_regions is None:
+        for sequence_region, attributes in sequence_region_list.items():
+            track = gv.add_feature_track(sequence_region, segments=attributes["segments"])
 
-        # change seperator of the segments
-        track.set_segment_sep(symbol="//")  # is shifted around like crazy...only when track_align_type = center!
+            # change seperator of the segments
+            track.set_segment_sep(symbol="//")  # is shifted around like crazy...only when track_align_type = center!
 
-        # add sub label for segments
-        for segment in track.segments:
-            segment.add_sublabel(size=6)
-
-        # add features to track
-        for feature in attributes["features"]:
-            if feature["strand"] == "+":
-                strand = +1
-            else:
-                strand = -1
-
-            # go through segments and add to according segment
+            # add sub label for segments
             for segment in track.segments:
-                if segment.start <= feature["start"] <= segment.start + segment.size:
-                    segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
-                    break
+                segment.add_sublabel(size=6)
+
+            # add features to track
+            for feature in attributes["features"]:
+                if feature["strand"] == "+":
+                    strand = +1
+                else:
+                    strand = -1
+
+                # go through segments and add to according segment
+                for segment in track.segments:
+                    if segment.start <= feature["start"] <= segment.start + segment.size:
+                        segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+                        break
+    else:
+        for sequence_region in wanted_sequence_regions:
+            attributes = sequence_region_list[sequence_region]
+
+            track = gv.add_feature_track(sequence_region, segments=attributes["segments"])
+
+            print(track.segments)
+
+            # change seperator of the segments
+            track.set_segment_sep(symbol="//")  # is shifted around like crazy...only when track_align_type = center!
+
+            # add sub label for segments
+            for segment in track.segments:
+                segment.add_sublabel(size=6)
+
+            # add features to track
+            for feature in attributes["features"]:
+                if feature["strand"] == "+":
+                    strand = +1
+                else:
+                    strand = -1
+
+                # go through segments and add to according segment
+                for segment in track.segments:
+                    if segment.start <= feature["start"] <= segment.start + segment.size:
+                        segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+                        break
 
     # add links to the plot
-    for sequence_region, attributes in sequence_region_list.items():
-        for feature in attributes["features"]:
-            gene = feature["name"].split("_")[0]
+    if wanted_sequence_regions is None:
+        for sequence_region, attributes in sequence_region_list.items():
+            for feature in attributes["features"]:
+                gene = feature["name"].split("_")[0]
 
-            # go through other sequence regions
-            for tmp_sequence_region, tmp_attributes in sequence_region_list.items():
-                # skip the sequence region handled
-                if tmp_sequence_region == sequence_region:
-                    continue
+                # go through other sequence regions
+                for tmp_sequence_region, tmp_attributes in sequence_region_list.items():
+                    # skip the sequence region handled
+                    if tmp_sequence_region == sequence_region:
+                        continue
 
-                for tmp_feature in tmp_attributes["features"]:
-                    tmp_gene = tmp_feature["name"].split("_")[0]
+                    for tmp_feature in tmp_attributes["features"]:
+                        tmp_gene = tmp_feature["name"].split("_")[0]
 
-                    # if same gene is found add link
-                    if tmp_gene == gene:
-                        try:
-                            gv.add_link((sequence_region, feature["start"], feature["stop"]),
-                                        (tmp_sequence_region, tmp_feature["start"], tmp_feature["stop"]))
-                        except pygenomeviz.exception.LinkTrackNotFoundError:
-                            print(f"Link between {sequence_region} and {tmp_sequence_region} for {gene} not possible, "
-                                  f"tracks not adjacent")
+                        # if same gene is found add link
+                        if tmp_gene == gene:
+                            try:
+                                gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
+                                             feature["start"], feature["stop"]),
+                                            (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
+                                             tmp_feature["start"], tmp_feature["stop"]))
+                            except pygenomeviz.exception.LinkTrackNotFoundError:
+                                print(f"Link between {sequence_region} and {tmp_sequence_region} "
+                                      f"for {gene} not possible, tracks not adjacent")
 
-                        break
+                            break
+    else:
+        for sequence_region in wanted_sequence_regions:
+            attributes = sequence_region_list[sequence_region]
+
+            for feature in attributes["features"]:
+                gene = feature["name"].split("_")[0]
+
+                # go through other sequence regions
+                for tmp_sequence_region in wanted_sequence_regions:
+                    tmp_attributes = sequence_region_list[tmp_sequence_region]
+
+                    # skip the sequence region handled
+                    if tmp_sequence_region == sequence_region:
+                        continue
+
+                    for tmp_feature in tmp_attributes["features"]:
+                        tmp_gene = tmp_feature["name"].split("_")[0]
+
+                        # if same gene is found add link
+                        if tmp_gene == gene:
+
+                            try:
+                                gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
+                                             feature["start"], feature["stop"]),
+                                            (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
+                                             tmp_feature["start"], tmp_feature["stop"]))
+                            except pygenomeviz.exception.LinkTrackNotFoundError:
+                                print(
+                                    f"Link between {sequence_region} and {tmp_sequence_region} "
+                                    f"for {gene} not possible, tracks not adjacent")
+
+                            break
 
     gv.savefig("test_plot.png")
 
@@ -218,14 +296,26 @@ if __name__ == "__main__":
             "superfamily for which the synteny plot should be created"
         )
     )
+    parser.add_argument(
+        "-srs",
+        "--sequence_regions",
+        required=False,
+        type=str,
+        help=(
+            "sequence regions to be displayed in the synteny plot"
+        )
+    )
     args = parser.parse_args()
 
     # get organisms and superfamily to work with
     organisms = args.organisms
     superfamily = args.superfamily
+    sequence_regions = args.sequence_regions
 
-    # convert organisms into list
+    # convert organisms and sequence regions into list
     organisms = organisms.split(",")
+    if sequence_regions:
+        sequence_regions = sequence_regions.split(",")
 
     # get paths for wanted organisms
     org_paths = get_organism_paths(organisms)
@@ -234,7 +324,7 @@ if __name__ == "__main__":
     seq_reg_list = extract_collected_info(org_paths, superfamily)
 
     # create the synteny plot
-    create_plot(seq_reg_list)
+    create_plot(seq_reg_list, sequence_regions)
 
 
 
