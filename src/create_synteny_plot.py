@@ -6,6 +6,39 @@ import argparse
 import pandas as pd
 
 
+def coordinates2segments(starts: list, stops: list):
+    starts.sort()
+    stops.sort()
+
+    segments = list()
+    next_segment_start = starts[0]
+    for i, stop in enumerate(stops):
+        # check whether all are processed
+        if i+1 == len(stops):
+            # add last segment
+            segments.append((next_segment_start, stop))
+
+            # end loop, all found
+            break
+
+        # get second coordinate
+        start_next = starts[i+1]
+
+        # check whether distance is higher than 60000, otherwise split into segments, avg length gene 62.000
+        if start_next - stop > 60000:
+            # create new segment
+            new_segment = (next_segment_start, stop + 5000)
+            segments.append(new_segment)
+
+            # save next segment start for next new segment
+            next_segment_start = start_next - 5000
+
+    if not segments:
+        segments.append((starts[0], stops[0]))
+
+    return segments
+
+
 def extract_collected_info(orgs: [str], superf: str):
     # convert organism path to df
     dfs = []
@@ -70,16 +103,30 @@ def extract_collected_info(orgs: [str], superf: str):
                     start=start, stop=stop
                 )]
 
+        # divide starts and stops of the genes into segments -> otherwise region is way too big
+        for sequence_region in sequence_region_list:
+            starts = list()
+            stops = list()
+            for i, _ in enumerate(sequence_region_list[sequence_region]["features"]):
+                starts.append(sequence_region_list[sequence_region]["features"][i]["start"])
+                stops.append(sequence_region_list[sequence_region]["features"][i]["stop"])
+
+            # process starts and stops into segments
+            segments = coordinates2segments(starts, stops)
+            sequence_region_list[sequence_region]["segments"] = segments
+
+        # sort features by coordinates
+        for attributes in sequence_region_list.values():
+            attributes["features"] = sorted(attributes["features"], key=lambda x: x["start"])
+
     return sequence_region_list
 
 
 def create_plot(sequence_region_list: dict):
     gv = GenomeViz(track_align_type="center")
 
-    print(sequence_region_list)
-
     for sequence_region, attributes in sequence_region_list.items():
-        track = gv.add_feature_track(sequence_region, (attributes["start"], attributes["stop"]))
+        track = gv.add_feature_track(sequence_region, segments=attributes["segments"])
 
         for feature in attributes["features"]:
             if feature["strand"] == "+":
@@ -87,7 +134,11 @@ def create_plot(sequence_region_list: dict):
             else:
                 strand = -1
 
-            track.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+            # go through segments and add to according segment
+            for segment in track.segments:
+                if segment.start <= feature["start"] <= segment.start + segment.size:
+                    segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+                    break
 
     gv.savefig("test_plot.png")
 
