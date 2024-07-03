@@ -85,6 +85,7 @@ def extract_collected_info(orgs: [str], superf: str):
 
             start = sys.maxsize
             stop = - sys.maxsize
+            cdss = list()
             # go through CDSs of the correct as event
             tmp_dict = ast.literal_eval(selection.at[gene, "CDSs"])
             for cds in tmp_dict[correct_index].values():
@@ -94,9 +95,13 @@ def extract_collected_info(orgs: [str], superf: str):
                 if cds["stop"] > stop:
                     stop = cds["stop"]
 
+                # add start and stop to CDS list
+                cdss.append((cds["start"], cds["stop"]))
+
             # sort stuff by gff sequence region
             sequence_region = selection.at[gene, "gff_sequence_region"]
 
+            # check whether sequence region (chromosome) is already added or not
             if sequence_region in sequence_region_list.keys():
                 # check whether start is larger or stop is smaller
                 if sequence_region_list[sequence_region]["start"] > start:
@@ -107,7 +112,7 @@ def extract_collected_info(orgs: [str], superf: str):
                 # add gene to features
                 sequence_region_list[sequence_region]["features"].append(dict(
                     name=gene + f"_{selection.at[gene, 'organism']}", strand=selection.at[gene, "strand"],
-                    start=start, stop=stop
+                    start=start, stop=stop, cdss=cdss
                 ))
             else:
                 sequence_region_list[sequence_region] = dict()
@@ -115,7 +120,7 @@ def extract_collected_info(orgs: [str], superf: str):
                 sequence_region_list[sequence_region]["stop"] = stop
                 sequence_region_list[sequence_region]["features"] = [dict(
                     name=gene + f"_{selection.at[gene, 'organism']}", strand=selection.at[gene, "strand"],
-                    start=start, stop=stop
+                    start=start, stop=stop, cdss=cdss
                 )]
 
         # divide starts and stops of the genes into segments -> otherwise region is way too big
@@ -141,7 +146,7 @@ def extract_collected_info(orgs: [str], superf: str):
     return sequence_region_list
 
 
-def create_track(gv, attributes: dict, sequence_region: str):
+def create_track(gv, attributes: dict, sequence_region: str, cdss: bool):
     track = gv.add_feature_track(sequence_region, segments=attributes["segments"])
 
     # change seperator of the segments
@@ -149,7 +154,7 @@ def create_track(gv, attributes: dict, sequence_region: str):
 
     # add sub label for segments
     for segment in track.segments:
-        segment.add_sublabel(size=6)
+        segment.add_sublabel(size=7)
 
     # add features to track
     for feature in attributes["features"]:
@@ -161,7 +166,11 @@ def create_track(gv, attributes: dict, sequence_region: str):
         # go through segments and add to according segment
         for segment in track.segments:
             if segment.start <= feature["start"] <= segment.start + segment.size:
-                segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+                if cdss:
+                    segment.add_exon_feature(feature["cdss"], strand, label=feature["name"])
+                else:
+                    segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+
                 break
 
 
@@ -201,18 +210,18 @@ def add_link(gv, feature: dict, sequence_region: str, tmp_sequence_region: str, 
     return flag
 
 
-def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: str):
+def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: str, cdss: bool):
     gv = GenomeViz(track_align_type="left")
 
     if wanted_sequence_regions is None:
         for sequence_region, attributes in sequence_region_list.items():
-            create_track(gv, attributes, sequence_region)
+            create_track(gv, attributes, sequence_region, cdss)
 
     else:
         for sequence_region in wanted_sequence_regions:
             attributes = sequence_region_list[sequence_region]
 
-            create_track(gv, attributes, sequence_region)
+            create_track(gv, attributes, sequence_region, cdss)
 
     # add links to the plot
     if wanted_sequence_regions is None:
@@ -307,6 +316,15 @@ if __name__ == "__main__":
             "output path for the synteny plot"
         )
     )
+    parser.add_argument(
+        "-cdss",
+        "--coding_sequences",
+        required=False,
+        action="store_true",
+        help=(
+            "Enables displaying of cdss, genes are displayed when disabled"
+        )
+    )
     args = parser.parse_args()
 
     # get organisms and superfamily to work with
@@ -314,6 +332,7 @@ if __name__ == "__main__":
     superfamily = args.superfamily
     sequence_regions = args.sequence_regions
     output_path = args.output
+    cdss_wanted = args.coding_sequences
 
     # convert organisms and sequence regions into list
     organisms = organisms.split(",")
@@ -327,7 +346,7 @@ if __name__ == "__main__":
     seq_reg_list = extract_collected_info(org_paths, superfamily)
 
     # create the synteny plot
-    create_plot(seq_reg_list, sequence_regions, output_path)
+    create_plot(seq_reg_list, sequence_regions, output_path, cdss_wanted)
 
 
 

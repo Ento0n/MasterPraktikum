@@ -7,6 +7,7 @@
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/create_synteny_plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_synteny_plot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.png" beforeDir="false" afterPath="$PROJECT_DIR$/test.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +167,8 @@
       <workItem from="1719902311582" duration="10502000" />
       <workItem from="1719928066786" duration="4502000" />
       <workItem from="1719987184086" duration="6335000" />
-      <workItem from="1719997662709" duration="722000" />
+      <workItem from="1719997662709" duration="1052000" />
+      <workItem from="1719998902115" duration="1245000" />
     </task>
     <servers />
   </component>
