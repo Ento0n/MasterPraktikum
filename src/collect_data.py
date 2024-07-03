@@ -94,60 +94,6 @@ def read_uniprot_tsv(path: str, data_fct: dict):
                                                uniprot_sequence=uniprot_sequence, organism=org)
 
 
-# extract chromosomes from gene_info
-def read_gene_info(path: str, data_fct: dict):
-    gene_id_gene_name_mapping = {}
-    with open(path) as f:
-        for line in tqdm(f):
-            if not line.startswith("9606"):
-                continue
-
-            gene_name = line.split("\t")[2]
-            chromosome = line.split("\t")[6]
-            gene_id = line.split("\t")[1]
-
-            if gene_name in data_fct.keys():
-                data_fct[gene_name]["chromosome"] = chromosome
-                data_fct[gene_name]["gene_id"] = gene_id
-                gene_id_gene_name_mapping[gene_id] = gene_name
-
-    return gene_id_gene_name_mapping
-
-
-# extract genomic locations from gene2accession
-def read_gene2accession(path: str, data_fct: dict):
-    with open(path) as f:
-        genome_accessions = {}
-        old_gene_name = ""
-        for line in tqdm(f):
-            if not line.startswith("9606"):
-                continue
-
-            status = line.split("\t")[2]
-            if status not in ["VALIDATED", "REVIEWED"]:
-                continue
-
-            gene_name = line.split("\t")[15].strip()
-
-            # skip entries that cannot be mapped
-            if gene_name not in data_fct.keys():
-                continue
-
-            # clear the record of genomic accesions in case new gene is handled
-            if gene_name != old_gene_name:
-                data_fct[old_gene_name]["genome_accessions"] = genome_accessions.copy()
-                genome_accessions.clear()
-
-            genome_accession = line.split("\t")[12]
-            start = line.split("\t")[9]
-            end = line.split("\t")[10]
-
-            genome_accessions[genome_accession] = f"{start}:{end}"
-
-            # remember old gene name for saving all genome accessions in 1 dictionary
-            old_gene_name = gene_name
-
-
 def read_genome_fasta(fna_file_path):
     sequences_fct = list(SeqIO.parse(fna_file_path, "fasta"))
 
@@ -277,7 +223,7 @@ def collect_prot_seqs(as_events: dict) -> str:
     return prot_seq
 
 
-def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping: dict = None):
+def read_gff(path: str, data_fct: dict, sequences_fct):
     with open(path) as f:
         cdss = {}
         cds_chain = False
@@ -291,38 +237,20 @@ def read_gff(path: str, data_fct: dict, sequences_fct, gene_id_gene_name_mapping
                 continue
 
             if line.split("\t")[2] == "pseudogene":
-                # check whether human organism is handled with gene ID or other with gene name
-                if gene_id_gene_name_mapping is not None:
-                    gene_id = extract_gene_id_gff(line)
+                gene_name = extract_gene_name_gff(line)
 
-                    if gene_id not in gene_id_gene_name_mapping.keys():
-                        continue
-
-                    gene_name = gene_id_gene_name_mapping[gene_id]
-                else:
-                    gene_name = extract_gene_name_gff(line)
-
-                    if gene_name not in data_fct.keys():
-                        continue
+                if gene_name not in data_fct.keys():
+                    continue
 
                 data_fct[gene_name]["pseudogene"] = True
 
                 cds_chain = False
 
             elif line.split("\t")[2] == "CDS":
-                # check whether human organism is handled with gene ID or other with gene name
-                if gene_id_gene_name_mapping is not None:
-                    gene_id = extract_gene_id_gff(line)
+                gene_name = extract_gene_name_gff(line)
 
-                    if gene_id not in gene_id_gene_name_mapping.keys():
-                        continue
-
-                    gene_name = gene_id_gene_name_mapping[gene_id]
-                else:
-                    gene_name = extract_gene_name_gff(line)
-
-                    if gene_name not in data_fct.keys():
-                        continue
+                if gene_name not in data_fct.keys():
+                    continue
 
                 # in case an entry is already present, skip this one...
                 if "CDSs" in data_fct[gene_name].keys():
@@ -436,15 +364,8 @@ if __name__ == "__main__":
     data = dict()
     read_uniprot_tsv(uni_path, data)
 
-    # only required for human organism
-    gene_id2gene_name_mapping = None
-    if organism == "human":
-        gene_id2gene_name_mapping = read_gene_info("data/gene_info", data)
-        read_gene2accession("data/gene2accession", data)
-
     sequences = read_genome_fasta(fna_path)
-    read_gff(gff_path, data, sequences,
-             gene_id2gene_name_mapping)
+    read_gff(gff_path, data, sequences)
 
     print_data(out_path, data)
 
