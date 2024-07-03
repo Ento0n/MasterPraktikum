@@ -201,7 +201,7 @@ def add_link(gv, feature: dict, sequence_region: str, tmp_sequence_region: str, 
     return flag
 
 
-def create_plot(sequence_region_list: dict, wanted_sequence_regions):
+def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: str):
     gv = GenomeViz(track_align_type="left")
 
     if wanted_sequence_regions is None:
@@ -248,7 +248,7 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions):
                     if flag:
                         break
 
-    gv.savefig("test_plot.png")
+    gv.savefig(out_path)
 
 
 def get_organism_paths(orgs: [str]):
@@ -298,12 +298,22 @@ if __name__ == "__main__":
             "sequence regions to be displayed in the synteny plot"
         )
     )
+    parser.add_argument(
+        "-o",
+        "--output",
+        required=True,
+        type=str,
+        help=(
+            "output path for the synteny plot"
+        )
+    )
     args = parser.parse_args()
 
     # get organisms and superfamily to work with
     organisms = args.organisms
     superfamily = args.superfamily
     sequence_regions = args.sequence_regions
+    output_path = args.output
 
     # convert organisms and sequence regions into list
     organisms = organisms.split(",")
@@ -317,7 +327,7 @@ if __name__ == "__main__":
     seq_reg_list = extract_collected_info(org_paths, superfamily)
 
     # create the synteny plot
-    create_plot(seq_reg_list, sequence_regions)
+    create_plot(seq_reg_list, sequence_regions, output_path)
 
 
 
