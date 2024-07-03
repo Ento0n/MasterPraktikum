@@ -173,8 +173,6 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions):
 
             track = gv.add_feature_track(sequence_region, segments=attributes["segments"])
 
-            print(track.segments)
-
             # change seperator of the segments
             track.set_segment_sep(symbol="//")  # is shifted around like crazy...only when track_align_type = center!
 
@@ -229,6 +227,9 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions):
             for feature in attributes["features"]:
                 gene = feature["name"].split("_")[0]
 
+                # set up flag to leave loops when match is found
+                flag = False
+
                 # go through other sequence regions
                 for tmp_sequence_region in wanted_sequence_regions:
                     tmp_attributes = sequence_region_list[tmp_sequence_region]
@@ -244,16 +245,28 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions):
                         if tmp_gene == gene:
 
                             try:
-                                gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
-                                             feature["start"], feature["stop"]),
-                                            (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
-                                             tmp_feature["start"], tmp_feature["stop"]))
+                                # turn around 1 start and stop if direction of genes is different
+                                if feature["strand"] == "+" and tmp_feature["strand"] == "-" or feature["strand"] == "-" and tmp_feature["strand"] == "+":
+                                    gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
+                                                 feature["stop"], feature["start"]),
+                                                (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
+                                                 tmp_feature["start"], tmp_feature["stop"]))
+                                else:
+                                    gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
+                                                 feature["start"], feature["stop"]),
+                                                (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
+                                                 tmp_feature["start"], tmp_feature["stop"]))
                             except pygenomeviz.exception.LinkTrackNotFoundError:
                                 print(
                                     f"Link between {sequence_region} and {tmp_sequence_region} "
                                     f"for {gene} not possible, tracks not adjacent")
 
+                            # set flag for outer loops and break inner loop
+                            flag = True
                             break
+
+                if flag:
+                    break
 
     gv.savefig("test_plot.png")
 
