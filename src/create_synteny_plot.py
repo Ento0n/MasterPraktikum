@@ -123,6 +123,10 @@ def extract_collected_info(orgs: [str], superf: str):
                     start=start, stop=stop, cdss=cdss
                 )]
 
+        # sort features by coordinates
+        for attributes in sequence_region_list.values():
+            attributes["features"] = sorted(attributes["features"], key=lambda x: x["start"])
+
         # divide starts and stops of the genes into segments -> otherwise region is way too big
         for sequence_region in sequence_region_list:
             starts = list()
@@ -138,10 +142,6 @@ def extract_collected_info(orgs: [str], superf: str):
             # add index to data
             for i, index in enumerate(index_list):
                 sequence_region_list[sequence_region]["features"][i]["index"] = index
-
-        # sort features by coordinates
-        for attributes in sequence_region_list.values():
-            attributes["features"] = sorted(attributes["features"], key=lambda x: x["start"])
 
     return sequence_region_list
 
