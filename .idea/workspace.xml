@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sf_3_40_532_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/sf_3_40_532_10.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/create_synteny_plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_synteny_plot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.png" beforeDir="false" afterPath="$PROJECT_DIR$/test.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sf_2_10_60_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/sf_2_10_60_10.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,7 +193,7 @@
       <workItem from="1719987184086" duration="6335000" />
       <workItem from="1719997662709" duration="1052000" />
       <workItem from="1719998902115" duration="5532000" />
-      <workItem from="1720167137803" duration="2194000" />
+      <workItem from="1720167137803" duration="2501000" />
     </task>
     <servers />
   </component>
@@ -218,17 +215,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/create_synteny_plot.py</url>
-          <line>22</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/MasterPraktikum$test_creating_synteny_plot.coverage" NAME="test_creating_synteny_plot Coverage Results" MODIFIED="1720168480463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

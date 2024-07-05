@@ -54,7 +54,7 @@ def coordinates2segments(starts: list, stops: list):
     return segments, index_list
 
 
-def extract_collected_info(orgs: [str], superf: str):
+def extract_collected_info(orgs: [str], superf: str, ko_genes: list):
     # convert organism path to df
     dfs = []
     for org in orgs:
@@ -76,6 +76,10 @@ def extract_collected_info(orgs: [str], superf: str):
     for selection in selections:
         # go through intersected genes
         for gene in gene_names:
+            # skip the unwanted genes
+            if gene in ko_genes:
+                continue
+
             try:
                 correct_index = int(selection.at[gene, "correct_index"])
             except ValueError:
@@ -325,6 +329,15 @@ if __name__ == "__main__":
             "Enables displaying of cdss, genes are displayed when disabled"
         )
     )
+    parser.add_argument(
+        "-kos",
+        "--ko_genes",
+        required=False,
+        type=str,
+        help=(
+            "genes that shouldn't be displayed in the synteny plot"
+        )
+    )
     args = parser.parse_args()
 
     # get organisms and superfamily to work with
@@ -333,17 +346,20 @@ if __name__ == "__main__":
     sequence_regions = args.sequence_regions
     output_path = args.output
     cdss_wanted = args.coding_sequences
+    knock_out_genes = args.ko_genes
 
     # convert organisms and sequence regions into list
     organisms = organisms.split(",")
     if sequence_regions:
         sequence_regions = sequence_regions.split(",")
+    if knock_out_genes:
+        knock_out_genes = knock_out_genes.split(",")
 
     # get paths for wanted organisms
     org_paths = get_organism_paths(organisms)
 
     # extract needed infos from .tsv-file
-    seq_reg_list = extract_collected_info(org_paths, superfamily)
+    seq_reg_list = extract_collected_info(org_paths, superfamily, knock_out_genes)
 
     # create the synteny plot
     create_plot(seq_reg_list, sequence_regions, output_path, cdss_wanted)
