@@ -3,21 +3,6 @@ import numpy as np
 import argparse
 
 
-def get_organism_info(org: str):
-    possible_organisms: list[str] = ["human", "mouse"]
-
-    if org == "human":
-        df = pd.read_csv("output/uniprot_genbank_homo_sapiens.tsv", sep="\t", index_col=0)
-        out_path = "output/uniprot_genbank_homo_sapiens.tsv"
-    elif org == "mouse":
-        df = pd.read_csv("output/uniprot_genbank_mus_musculus.tsv", sep="\t", index_col=0)
-        out_path = "output/uniprot_genbank_mus_musculus.tsv"
-    else:
-        raise Exception(f"given organism cannot be processed, possible organisms: {possible_organisms}")
-
-    return df, out_path
-
-
 def check_correctly_translated(df: pd.DataFrame, v: bool):
     wrong_sequences = set()
     counter = 0
@@ -78,12 +63,11 @@ if __name__ == "__main__":
     # argument parser
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-o",
-        "--organism",
+        "--tsv",
         required=True,
         type=str,
         help=(
-            "Organism f.e. human, mouse... for which the data should be collected."
+            "path to tsv file containing collected data"
         )
     )
     parser.add_argument(
@@ -98,15 +82,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # get organism to work with
-    organism = args.organism
+    tsv_path = args.tsv
     verbose = args.verbose
 
     # get df
-    data_frame, output_path = get_organism_info(organism)
+    data_frame = pd.read_csv(tsv_path, sep="\t", index_col=0)
 
     correctly_trans, correct_ind = check_correctly_translated(data_frame, verbose)
 
     # add column to df and save it as .tsv-file
     data_frame["correctly_translated"] = correctly_trans
     data_frame["correct_index"] = correct_ind
-    data_frame.to_csv(output_path, sep="\t")
+    data_frame.to_csv(tsv_path, sep="\t")

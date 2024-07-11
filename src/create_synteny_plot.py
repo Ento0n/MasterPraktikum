@@ -77,14 +77,19 @@ def extract_collected_info(orgs: [str], superf: str, ko_genes: list):
         # go through intersected genes
         for gene in gene_names:
             # skip the unwanted genes
-            if gene in ko_genes:
-                continue
+            if ko_genes:
+                if gene in ko_genes:
+                    continue
 
             try:
                 correct_index = int(selection.at[gene, "correct_index"])
             except ValueError:
                 print(f"gene {gene} of organism {selection.at[gene, 'organism']} could not be correctly"
-                      f"translated and is therefore not represented in the synteny plot!")
+                      f"translated, therefore simmply the first alternative splicing event is displayed!")
+                correct_index = 0
+
+            # skip the entries where everythig is missing
+            if pd.isna(selection.at[gene, "CDSs"]):
                 continue
 
             start = sys.maxsize
@@ -265,7 +270,7 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: s
 
 
 def get_organism_paths(orgs: [str]):
-    possible_organisms: list[str] = ["human", "mouse"]
+    possible_organisms: list[str] = ["human", "mouse", "chicken"]
 
     paths = []
     for org in orgs:
@@ -274,6 +279,9 @@ def get_organism_paths(orgs: [str]):
 
         if org == "mouse":
             paths.append("output/uniprot_genbank_mus_musculus.tsv")
+
+        if org == "chicken":
+            paths.append("output/uniprot_genbank_gallus_gallus.tsv")
 
         if org not in possible_organisms:
             raise Exception(f"given organism cannot be processed, possible organisms: {possible_organisms}")

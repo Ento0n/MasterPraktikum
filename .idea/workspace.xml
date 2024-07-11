@@ -5,7 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/sf_2_10_60_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/sf_2_10_60_10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/uniprotkb_organism_id_9913_AND_database_2024_07_10" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sample_data/BAP1_human.gff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sample_data/BAP1_mouse.gff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sample_data/UCHL1_human.gff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sample_data/UCHL1_mouse.gff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/compare_uniprot_seq_my_seq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/create_synteny_plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_synteny_plot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.png" beforeDir="false" afterPath="$PROJECT_DIR$/test.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,11 +61,11 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/data" />
+      <recent name="$PROJECT_DIR$/data/genomes/gallus_gallus" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/data/sample_data" />
       <recent name="$PROJECT_DIR$/data/genomes/mus_musculus" />
-      <recent name="$PROJECT_DIR$/src/tinkering/graphs" />
     </key>
   </component>
   <component name="RunManager" selected="Python.test_creating_synteny_plot">
@@ -193,7 +203,13 @@
       <workItem from="1719987184086" duration="6335000" />
       <workItem from="1719997662709" duration="1052000" />
       <workItem from="1719998902115" duration="5532000" />
-      <workItem from="1720167137803" duration="2501000" />
+      <workItem from="1720167137803" duration="7148000" />
+      <workItem from="1720176821640" duration="5388000" />
+      <workItem from="1720252670701" duration="2092000" />
+      <workItem from="1720508272792" duration="1988000" />
+      <workItem from="1720596101795" duration="989000" />
+      <workItem from="1720608677919" duration="1378000" />
+      <workItem from="1720681739321" duration="2258000" />
     </task>
     <servers />
   </component>

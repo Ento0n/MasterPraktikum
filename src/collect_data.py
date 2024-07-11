@@ -322,47 +322,52 @@ def print_data(path: str, data_fct: dict):
     df.to_csv(path, sep="\t")
 
 
-def get_organism_paths(org) -> (str, str, str):
-    possible_organisms: list[str] = ["human", "mouse"]
-
-    if org == "human":
-        uniprot_path = "data/uniprot_gene3d_human.tsv"
-        gff_file_path = "data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.gff"
-        fna_file_path = "data/genomes/homo_sapiens/GCF_000001405.40_GRCh38.p14_genomic.fna"
-        out_file_path = "output/uniprot_genbank_homo_sapiens.tsv"
-    elif org == "mouse":
-        uniprot_path = "data/uniprot_gene3d_mouse.tsv"
-        gff_file_path = "data/genomes/mus_musculus/GCF_000001635.27_GRCm39_genomic.gff"
-        fna_file_path = "data/genomes/mus_musculus/GCF_000001635.27_GRCm39_genomic.fna"
-        out_file_path = "output/uniprot_genbank_mus_musculus.tsv"
-    else:
-        raise Exception(f"given organism cannot be processed, possible organisms: {possible_organisms}")
-
-    return uniprot_path, gff_file_path, fna_file_path, out_file_path
-
-
 if __name__ == "__main__":
     # argument parser
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-o",
-        "--organism",
+        "--tsv",
         required=True,
         type=str,
         help=(
-            "Organism f.e. human, mouse... for which the data should be collected."
+            "Path to tsv file containing gene name, cath superfamily etc from Uniprot"
+        )
+    )
+    parser.add_argument(
+        "--gff",
+        required=True,
+        type=str,
+        help=(
+            "Pth to gff file, containing CDSs from genbank"
+        )
+    )
+    parser.add_argument(
+        "--fna",
+        required=True,
+        type=str,
+        help=(
+            "Path to fna file, the genome file from genbank"
+        )
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        required=True,
+        type=str,
+        help=(
+            "path for output of collecting data"
         )
     )
     args = parser.parse_args()
 
     # get organism to work with
-    organism = args.organism
-
-    # get paths for given organism
-    uni_path, gff_path, fna_path, out_path = get_organism_paths(organism)
+    tsv_path = args.tsv
+    gff_path = args.gff
+    fna_path = args.fna
+    out_path = args.output
 
     data = dict()
-    read_uniprot_tsv(uni_path, data)
+    read_uniprot_tsv(tsv_path, data)
 
     sequences = read_genome_fasta(fna_path)
     read_gff(gff_path, data, sequences)
