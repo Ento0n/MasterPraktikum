@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efbf52ad-8d1c-4beb-a12e-a3e149635936" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/data/uniprotkb_organism_id_9913_AND_database_2024_07_10" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sample_data/BAP1_human.gff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sample_data/BAP1_mouse.gff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sample_data/UCHL1_human.gff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sample_data/UCHL1_mouse.gff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/collect_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/collect_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/compare_uniprot_seq_my_seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/compare_uniprot_seq_my_seq.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/create_synteny_plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_synteny_plot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.png" beforeDir="false" afterPath="$PROJECT_DIR$/test.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -209,7 +201,7 @@
       <workItem from="1720508272792" duration="1988000" />
       <workItem from="1720596101795" duration="989000" />
       <workItem from="1720608677919" duration="1378000" />
-      <workItem from="1720681739321" duration="2258000" />
+      <workItem from="1720681739321" duration="8491000" />
     </task>
     <servers />
   </component>

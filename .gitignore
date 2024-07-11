@@ -4,6 +4,7 @@ data/cath-domain-list.txt
 data/gene2accession
 data/gene_info
 data/genomes
+data/*
 
 # gotta ignore the output since it's larger than 100mb
 output/uniprot_genbank_homo_sapiens.tsv

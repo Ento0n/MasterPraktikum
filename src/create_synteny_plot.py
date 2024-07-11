@@ -270,7 +270,7 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: s
 
 
 def get_organism_paths(orgs: [str]):
-    possible_organisms: list[str] = ["human", "mouse", "chicken"]
+    possible_organisms: list[str] = ["human", "mouse", "chicken", "bovin", "zebrafish", "pig", "chimpanzee"]
 
     paths = []
     for org in orgs:
@@ -282,6 +282,18 @@ def get_organism_paths(orgs: [str]):
 
         if org == "chicken":
             paths.append("output/uniprot_genbank_gallus_gallus.tsv")
+
+        if org == "bovin":
+            paths.append("output/uniprot_genbank_bos_taurus.tsv")
+
+        if org == "zebrafish":
+            paths.append("output/uniprot_genbank_danio_rerio.tsv")
+
+        if org == "pig":
+            paths.append("output/uniprot_genbank_sus_scrofa.tsv")
+
+        if org == "chimpanzee":
+            paths.append("output/uniprot_genbank_pan_troglodytes.tsv")
 
         if org not in possible_organisms:
             raise Exception(f"given organism cannot be processed, possible organisms: {possible_organisms}")
