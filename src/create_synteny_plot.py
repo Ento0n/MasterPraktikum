@@ -7,7 +7,7 @@ import argparse
 import pandas as pd
 
 
-"python src/create_synteny_plot.py -sf 2.40.10.10 -os human,mouse,bovin,pig,chimpanzee,chicken -srs NC_000019.10,NC_072418.2,NC_037345.1,NC_010448.4,NC_000073.7,NC052532.1,NC_052532.1 -o output/KLK/KLK.png -kos CTRB2,HP,LOC100848132,LOC100621820,MASP2,CELA2A,OVCH2,PRSS53,PRSS8,PRSS36,PRSS23,F7,F10,PROZ,TMPRSS3,TMPRSS2,PRSS54 -cdss"
+"python src/create_synteny_plot.py -sf 2.40.10.10 -os human,mouse,bovin,pig,chimpanzee,chicken -srs NC_000019.10,NC_072418.2,NC_037345.1,NC_010448.4,NC_000073.7,NC052532.1,NC_052532.1 -o output/KLK/KLK.png -kos CTRB2,HP,LOC100848132,LOC100621820,MASP2,CELA2A,OVCH2,PRSS53,PRSS8,PRSS36,PRSS23,F7,F10,PROZ,TMPRSS3,TMPRSS2,PRSS54,GZMM,PRSS57,AZU1,PRTN3,ELANE,CFD,TMPRSS9,TMPRSS15,LOC418421,TMPRSS7 -cdss"
 "python src/create_synteny_plot.py -os human,chimpanzee,bovin,pig,mouse,chicken,anole,platypus -srs NC_000008.11,NC_072405.2,NC_037341.1,NC_010446.5,NC_000081.7,NC_052533.1,NC_041731.1,NC_085844.1 -sf 2.10.60.10 -o output/LY6/LY6.png"
 
 
@@ -85,12 +85,19 @@ def extract_collected_info(orgs: [str], superf: str, ko_genes: list, wanted_gene
 
             try:
                 correct_index = int(selection.at[gene, "correct_index"])
+                correct = True
+
             except ValueError:
+                correct = False
+
                 if v:
                     print(f"gene {gene} of organism {selection.at[gene, 'organism']} could not be correctly"
                           f"translated, therefore simmply the first alternative splicing event is displayed!")
-
-                correct_index = 0
+                try:
+                    cds_counter = ast.literal_eval(selection.at[gene, "cds_counter"])
+                    correct_index = cds_counter.index(max(cds_counter))
+                except ValueError:
+                    correct_index = 0
 
             # skip the entries where everythig is missing
             if pd.isna(selection.at[gene, "CDSs"]):
@@ -125,7 +132,7 @@ def extract_collected_info(orgs: [str], superf: str, ko_genes: list, wanted_gene
                 # add gene to features
                 sequence_region_list[sequence_region]["features"].append(dict(
                     name=gene + f"_{selection.at[gene, 'organism']}", strand=selection.at[gene, "strand"],
-                    start=start, stop=stop, cdss=cdss
+                    start=start, stop=stop, cdss=cdss, correct=correct
                 ))
             else:
                 sequence_region_list[sequence_region] = dict()
@@ -133,7 +140,7 @@ def extract_collected_info(orgs: [str], superf: str, ko_genes: list, wanted_gene
                 sequence_region_list[sequence_region]["stop"] = stop
                 sequence_region_list[sequence_region]["features"] = [dict(
                     name=gene + f"_{selection.at[gene, 'organism']}", strand=selection.at[gene, "strand"],
-                    start=start, stop=stop, cdss=cdss
+                    start=start, stop=stop, cdss=cdss, correct=correct
                 )]
 
         # sort features by coordinates
@@ -184,8 +191,15 @@ def create_track(gv, attributes: dict, sequence_region: str, cdss: bool):
         # go through segments and add to according segment
         for segment in track.segments:
             if segment.start <= feature["start"] <= segment.start + segment.size:
+                if feature["correct"]:
+                    color = "green"
+                else:
+                    color = "red"
+
                 if cdss:
-                    segment.add_exon_feature(feature["cdss"], strand, label=feature["name"])
+                    segment.add_exon_feature(feature["cdss"], strand, intron_patch_kws=dict(ec=color),
+                                             label=feature["name"] + f"_{len(feature['cdss'])}" +
+                                             f"_{feature['correct']}")
                 else:
                     segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
 
