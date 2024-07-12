@@ -16,7 +16,7 @@ def coordinates2segments(starts: list, stops: list):
     stops.sort()
 
     # buffer around the starts and stop for nicer displaying
-    buffer = 5000
+    buffer = 2000
 
     segments = list()
     next_segment_start = starts[0] - buffer
@@ -41,7 +41,7 @@ def coordinates2segments(starts: list, stops: list):
         index_list.append(gene2exon_index)
 
         # check whether distance is higher than 60000, otherwise split into segments, avg length gene 62.000
-        if start_next - stop > 60000:
+        if start_next - stop > 40000:
             # create new segment
             new_segment = (next_segment_start, stop + buffer)
             segments.append(new_segment)
@@ -210,12 +210,14 @@ def add_link(gv, feature: dict, sequence_region: str, tmp_sequence_region: str, 
                     gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
                                  feature["stop"], feature["start"]),
                                 (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
-                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue")
+                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue",
+                                color="lightgrey")
                 else:
                     gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
                                  feature["start"], feature["stop"]),
                                 (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
-                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue")
+                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue",
+                                color="lightgrey")
             except pygenomeviz.exception.LinkTrackNotFoundError:
                 if v:
                     print(
