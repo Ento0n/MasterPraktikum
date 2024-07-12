@@ -7,6 +7,10 @@ import argparse
 import pandas as pd
 
 
+"python src/create_synteny_plot.py -sf 2.40.10.10 -os human,mouse,bovin,pig,chimpanzee,chicken -srs NC_000019.10,NC_072418.2,NC_037345.1,NC_010448.4,NC_000073.7,NC052532.1,NC_052532.1 -o output/KLK/KLK.png -kos CTRB2,HP,LOC100848132,LOC100621820,MASP2,CELA2A,OVCH2,PRSS53,PRSS8,PRSS36,PRSS23,F7,F10,PROZ,TMPRSS3,TMPRSS2,PRSS54 -cdss"
+"python src/create_synteny_plot.py -os human,chimpanzee,bovin,pig,mouse,chicken,anole,platypus -srs NC_000008.11,NC_072405.2,NC_037341.1,NC_010446.5,NC_000081.7,NC_052533.1,NC_041731.1,NC_085844.1 -sf 2.10.60.10 -o output/LY6/LY6.png"
+
+
 def coordinates2segments(starts: list, stops: list):
     starts.sort()
     stops.sort()
@@ -54,7 +58,7 @@ def coordinates2segments(starts: list, stops: list):
     return segments, index_list
 
 
-def extract_collected_info(orgs: [str], superf: str, ko_genes: list):
+def extract_collected_info(orgs: [str], superf: str, ko_genes: list, wanted_genes: list, v: bool):
     # convert organism path to df
     dfs = []
     for org in orgs:
@@ -65,27 +69,27 @@ def extract_collected_info(orgs: [str], superf: str, ko_genes: list):
     for df in dfs:
         selections.append(df[df["cath_superfamily"].apply(lambda x: superf in x.split(";"))])
 
-    # filter out which genes are given in all selections
-    gene_names = set(selections[0].index.tolist())
-    for selection in selections:
-        selection_gene_names = set(selection.index.tolist())
-        gene_names = gene_names & selection_gene_names
-
     # get gene start and stop and collect everything sorted by sequence region
     sequence_region_list = dict()
     for selection in selections:
         # go through intersected genes
-        for gene in gene_names:
+        for gene in selection.index:
             # skip the unwanted genes
             if ko_genes:
                 if gene in ko_genes:
                     continue
 
+            if wanted_genes:
+                if gene not in wanted_genes:
+                    continue
+
             try:
                 correct_index = int(selection.at[gene, "correct_index"])
             except ValueError:
-                print(f"gene {gene} of organism {selection.at[gene, 'organism']} could not be correctly"
-                      f"translated, therefore simmply the first alternative splicing event is displayed!")
+                if v:
+                    print(f"gene {gene} of organism {selection.at[gene, 'organism']} could not be correctly"
+                          f"translated, therefore simmply the first alternative splicing event is displayed!")
+
                 correct_index = 0
 
             # skip the entries where everythig is missing
@@ -162,8 +166,13 @@ def create_track(gv, attributes: dict, sequence_region: str, cdss: bool):
     track.set_segment_sep(symbol="//")  # is shifted around like crazy...only when track_align_type = center!
 
     # add sub label for segments
-    for segment in track.segments:
-        segment.add_sublabel(size=7)
+    for i, segment in enumerate(track.segments):
+        if i % 2 == 0:
+            y_margin = 0.2
+        else:
+            y_margin = 0.7
+
+        segment.add_sublabel(size=7, ymargin=y_margin)
 
     # add features to track
     for feature in attributes["features"]:
@@ -184,7 +193,7 @@ def create_track(gv, attributes: dict, sequence_region: str, cdss: bool):
 
 
 def add_link(gv, feature: dict, sequence_region: str, tmp_sequence_region: str, gene: str, tmp_attributes: dict,
-             flag: bool):
+             v: bool):
     # skip the sequence region handled
     if tmp_sequence_region == sequence_region:
         return
@@ -201,25 +210,23 @@ def add_link(gv, feature: dict, sequence_region: str, tmp_sequence_region: str, 
                     gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
                                  feature["stop"], feature["start"]),
                                 (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
-                                 tmp_feature["start"], tmp_feature["stop"]), curve=True)
+                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue")
                 else:
                     gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
                                  feature["start"], feature["stop"]),
                                 (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
-                                 tmp_feature["start"], tmp_feature["stop"]), curve=True)
+                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue")
             except pygenomeviz.exception.LinkTrackNotFoundError:
-                print(
-                    f"Link between {sequence_region} and {tmp_sequence_region} "
-                    f"for {gene} not possible, tracks not adjacent")
+                if v:
+                    print(
+                        f"Link between {sequence_region} and {tmp_sequence_region} "
+                        f"for {gene} not possible, tracks not adjacent")
 
             # set flag for outer loops and break inner loop
-            flag = True
             break
 
-    return flag
 
-
-def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: str, cdss: bool):
+def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: str, cdss: bool, v: bool):
     gv = GenomeViz(track_align_type="left")
 
     if wanted_sequence_regions is None:
@@ -228,6 +235,10 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: s
 
     else:
         for sequence_region in wanted_sequence_regions:
+            # skip not present ones
+            if sequence_region not in sequence_region_list.keys():
+                continue
+
             attributes = sequence_region_list[sequence_region]
 
             create_track(gv, attributes, sequence_region, cdss)
@@ -238,17 +249,16 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: s
             for feature in attributes["features"]:
                 gene = feature["name"].split("_")[0]
 
-                # set up flag to leave loops when match is found
-                flag = False
-
                 # go through other sequence regions
                 for tmp_sequence_region, tmp_attributes in sequence_region_list.items():
-                    flag = add_link(gv, feature, sequence_region, tmp_sequence_region, gene, tmp_attributes, flag)
+                    add_link(gv, feature, sequence_region, tmp_sequence_region, gene, tmp_attributes, v)
 
-                    if flag:
-                        break
     else:
         for sequence_region in wanted_sequence_regions:
+            # skip not present ones
+            if sequence_region not in sequence_region_list.keys():
+                continue
+
             attributes = sequence_region_list[sequence_region]
 
             for feature in attributes["features"]:
@@ -259,18 +269,20 @@ def create_plot(sequence_region_list: dict, wanted_sequence_regions, out_path: s
 
                 # go through other sequence regions
                 for tmp_sequence_region in wanted_sequence_regions:
+                    # skip not present ones
+                    if tmp_sequence_region not in sequence_region_list.keys():
+                        continue
+
                     tmp_attributes = sequence_region_list[tmp_sequence_region]
 
-                    flag = add_link(gv, feature, sequence_region, tmp_sequence_region, gene, tmp_attributes, flag)
-
-                    if flag:
-                        break
+                    add_link(gv, feature, sequence_region, tmp_sequence_region, gene, tmp_attributes, flag)
 
     gv.savefig(out_path)
 
 
 def get_organism_paths(orgs: [str]):
-    possible_organisms: list[str] = ["human", "mouse", "chicken", "bovin", "zebrafish", "pig", "chimpanzee"]
+    possible_organisms: list[str] = ["human", "mouse", "chicken", "bovin", "zebrafish", "pig", "chimpanzee", "platypus",
+                                     "anole"]
 
     paths = []
     for org in orgs:
@@ -294,6 +306,12 @@ def get_organism_paths(orgs: [str]):
 
         if org == "chimpanzee":
             paths.append("output/uniprot_genbank_pan_troglodytes.tsv")
+
+        if org == "platypus":
+            paths.append("output/uniprot_genbank_platypus.tsv")
+
+        if org == "anole":
+            paths.append("output/uniprot_genbank_anole.tsv")
 
         if org not in possible_organisms:
             raise Exception(f"given organism cannot be processed, possible organisms: {possible_organisms}")
@@ -358,6 +376,20 @@ if __name__ == "__main__":
             "genes that shouldn't be displayed in the synteny plot"
         )
     )
+    parser.add_argument(
+        "--genes",
+        required=False,
+        type=str
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        required=False,
+        action="store_true",
+        help=(
+            "Enables printing of warnings"
+        )
+    )
     args = parser.parse_args()
 
     # get organisms and superfamily to work with
@@ -367,6 +399,8 @@ if __name__ == "__main__":
     output_path = args.output
     cdss_wanted = args.coding_sequences
     knock_out_genes = args.ko_genes
+    genes = args.genes
+    verbose = args.verbose
 
     # convert organisms and sequence regions into list
     organisms = organisms.split(",")
@@ -374,15 +408,17 @@ if __name__ == "__main__":
         sequence_regions = sequence_regions.split(",")
     if knock_out_genes:
         knock_out_genes = knock_out_genes.split(",")
+    if genes:
+        genes = genes.split(",")
 
     # get paths for wanted organisms
     org_paths = get_organism_paths(organisms)
 
     # extract needed infos from .tsv-file
-    seq_reg_list = extract_collected_info(org_paths, superfamily, knock_out_genes)
+    seq_reg_list = extract_collected_info(org_paths, superfamily, knock_out_genes, genes, verbose)
 
     # create the synteny plot
-    create_plot(seq_reg_list, sequence_regions, output_path, cdss_wanted)
+    create_plot(seq_reg_list, sequence_regions, output_path, cdss_wanted, verbose)
 
 
 
