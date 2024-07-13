@@ -192,16 +192,16 @@ def create_track(gv, attributes: dict, sequence_region: str, cdss: bool):
         for segment in track.segments:
             if segment.start <= feature["start"] <= segment.start + segment.size:
                 if feature["correct"]:
-                    color = "green"
+                    color = "royalblue"
                 else:
-                    color = "red"
+                    color = "orangered"
 
                 if cdss:
                     segment.add_exon_feature(feature["cdss"], strand, intron_patch_kws=dict(ec=color),
-                                             label=feature["name"] + f"_{len(feature['cdss'])}" +
-                                             f"_{feature['correct']}")
+                                             label=feature["name"].split("_")[0] + f"_{len(feature['cdss'])}")
                 else:
-                    segment.add_feature(feature["start"], feature["stop"], strand, label=feature["name"])
+                    segment.add_feature(feature["start"], feature["stop"], strand, fc=color,
+                                        label=feature["name"].split("_")[0] + f"_{len(feature['cdss'])}")
 
                 break
 
@@ -224,13 +224,13 @@ def add_link(gv, feature: dict, sequence_region: str, tmp_sequence_region: str, 
                     gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
                                  feature["stop"], feature["start"]),
                                 (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
-                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue",
+                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="plum",
                                 color="lightgrey")
                 else:
                     gv.add_link((sequence_region, "seg" + str(feature["index"] + 1),
                                  feature["start"], feature["stop"]),
                                 (tmp_sequence_region, "seg" + str(tmp_feature["index"] + 1),
-                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="skyblue",
+                                 tmp_feature["start"], tmp_feature["stop"]), curve=True, inverted_color="plum",
                                 color="lightgrey")
             except pygenomeviz.exception.LinkTrackNotFoundError:
                 if v:
